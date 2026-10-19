@@ -113,7 +113,7 @@ app.post("/api/generate", auth, genLimit, async (req, res) => {
   } catch (e) {
     db.prepare("UPDATE users SET credits=credits+? WHERE id=?").run(cost, req.user.id);
     console.error(tool, e?.message || e);
-    res.status(502).json({ error: "Couldn't generate that. Your credits were returned. Try again in a moment." });
+    res.status(502).json({ error: "Couldn't generate that (" + String(e?.message || e).slice(0, 200) + "). Your credits were returned." });
   }
 });
 
