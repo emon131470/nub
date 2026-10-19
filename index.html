@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumora | Create images, videos and voices in seconds</title>
+<meta name="description" content="One workspace for creators and brands. Type an idea, get a finished result.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#0B0F1A;--card:#121827;--line:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--lime:#C8FF2E;--lime-soft:#D9FF6B;--ink:#0B0F1A}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo i{width:28px;height:28px;border-radius:8px;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:17px}
+.links{display:flex;gap:26px;color:var(--muted);font-size:14px}
+.links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:500 14px 'Space Grotesk',sans-serif;padding:10px 18px;border-radius:8px;background:var(--lime);color:var(--ink);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid #374151}
+.btn.sm{padding:7px 14px;font-size:13px}
+.hero{text-align:center;padding:72px 0 44px}
+.badge{display:inline-block;font-size:12px;color:var(--lime-soft);background:#1A2508;border:1px solid #3A4D12;padding:4px 12px;border-radius:20px;margin-bottom:22px}
+h1{font-size:clamp(34px,6vw,60px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+h1 span{color:var(--lime)}
+.hero p{color:var(--muted);max-width:480px;margin:18px auto 28px;font-size:17px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 0 64px}
+.tile{height:150px;border-radius:12px;position:relative;display:flex;align-items:flex-end;padding:10px}
+.tile em{font-style:normal;font-size:12px;background:#0B0F1Acc;padding:3px 9px;border-radius:6px}
+.tile i{position:absolute;top:10px;right:10px;color:var(--lime);font-size:20px}
+h2{font-size:28px;font-weight:500;margin-bottom:6px}
+.sub{color:var(--muted);margin-bottom:22px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:64px}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;text-align:left;color:var(--text);font-family:inherit;cursor:pointer;transition:border-color .15s}
+.tool:hover,.tool.on{border-color:var(--lime)}
+.tool i{font-size:26px;color:var(--lime)}
+.tool b{display:block;font-weight:500;margin:10px 0 4px;font-size:17px}
+.tool span{font-size:13px;color:var(--muted)}
+.studio{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:64px}
+.studio h3{font-weight:500;font-size:20px;margin-bottom:12px}
+textarea{width:100%;min-height:96px;background:var(--bg);border:1px solid #374151;border-radius:10px;color:var(--text);font:400 15px 'Space Grotesk',sans-serif;padding:12px;resize:vertical}
+.row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.row small{color:var(--muted)}
+.out{margin-top:16px;border:1px dashed #374151;border-radius:10px;padding:18px;color:var(--muted);font-size:14px;min-height:64px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:72px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.plan.pop{border:2px solid var(--lime)}
+.plan h4{font-weight:500;color:var(--muted);font-size:14px}
+.plan.pop h4{color:var(--lime-soft)}
+.price{font-size:36px;font-weight:700;margin:6px 0}
+.price small{font-size:14px;color:var(--muted);font-weight:400}
+.plan p{font-size:14px;color:var(--muted);margin-bottom:16px}
+footer{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;color:#6B7280;font-size:13px;flex-wrap:wrap;gap:8px}
+@media(max-width:800px){.gallery,.tools{grid-template-columns:repeat(2,1fr)}.plans{grid-template-columns:1fr}.links{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+dialog{background:var(--card);color:var(--text);border:1px solid #374151;border-radius:14px;padding:26px;width:min(380px,92vw);margin:auto}
+dialog::backdrop{background:#000a}
+dialog h3{font-weight:500;margin-bottom:14px}
+dialog input{width:100%;background:var(--bg);border:1px solid #374151;border-radius:8px;color:var(--text);font:400 15px 'Space Grotesk',sans-serif;padding:11px;margin-bottom:10px}
+.err{color:#FF8A8A;font-size:13px;min-height:20px;margin-bottom:6px}
+.swap{background:none;border:0;color:var(--lime-soft);cursor:pointer;font:inherit;font-size:13px;margin-top:12px}
+.out img,.out video{max-width:100%;border-radius:10px;display:block}.out audio{width:100%}.out pre{white-space:pre-wrap;font:inherit;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+ <a class="logo" href="#"><i class="ti ti-sparkles" aria-hidden="true"></i>Lumora</a>
+ <div class="links"><a href="#tools">Tools</a><a href="#gallery">Gallery</a><a href="#pricing">Pricing</a></div>
+ <div id="navUser" style="display:flex;gap:10px;align-items:center"><button class="swap" id="loginBtn" style="color:var(--muted);font-size:14px;margin:0">Log in</button><button class="btn sm" id="signupBtn">Get started</button></div>
+</nav>
+
+<header class="hero">
+ <div class="badge">New: video generation is live</div>
+ <h1>Create stunning images, videos<br>and voices in <span>seconds</span></h1>
+ <p>One workspace for creators and brands. Type an idea, get a finished result.</p>
+ <div class="cta"><a class="btn" href="#studio">Start creating free</a><a class="btn ghost" href="#gallery"><i class="ti ti-player-play" aria-hidden="true"></i>Watch demo</a></div>
+</header>
+
+<section class="gallery" id="gallery" aria-label="Sample creations">
+ <div class="tile" style="background:#1C2A10"><em>Portrait</em></div>
+ <div class="tile" style="background:#12332F"><i class="ti ti-player-play" aria-hidden="true"></i><em>Product video</em></div>
+ <div class="tile" style="background:#2A2A0F"><em>Ad poster</em></div>
+ <div class="tile" style="background:#1A2638"><i class="ti ti-player-play" aria-hidden="true"></i><em>Short clip</em></div>
+</section>
+
+<section id="tools">
+ <h2>Everything you need to create</h2>
+ <p class="sub">Pick a tool to start.</p>
+ <div class="tools" id="toolGrid">
+  <button class="tool on" data-t="Image" data-ph="A red sports car on a rainy neon street at night" data-i="ti-photo"><i class="ti ti-photo" aria-hidden="true"></i><b>Image</b><span>Text to image in any style</span></button>
+  <button class="tool" data-t="Video" data-ph="A drone shot over a misty mountain at sunrise" data-i="ti-movie"><i class="ti ti-movie" aria-hidden="true"></i><b>Video</b><span>Turn prompts or photos into clips</span></button>
+  <button class="tool" data-t="Voice" data-ph="Welcome to our store. Today only, everything is 20 percent off." data-i="ti-microphone"><i class="ti ti-microphone" aria-hidden="true"></i><b>Voice</b><span>Natural voiceovers and audio</span></button>
+  <button class="tool" data-t="Ad creator" data-ph="Instagram ad for a handmade coffee brand, warm and friendly" data-i="ti-speakerphone"><i class="ti ti-speakerphone" aria-hidden="true"></i><b>Ad creator</b><span>Ready-to-post campaign assets</span></button>
+ </div>
+</section>
+
+<section class="studio" id="studio" aria-live="polite">
+ <h3 id="studioTitle">Image studio</h3>
+ <label for="prompt" class="sub" style="display:block;margin-bottom:8px">Describe what you want to create</label>
+ <textarea id="prompt" placeholder="A red sports car on a rainy neon street at night"></textarea>
+ <div class="row"><button class="btn" id="go"><i class="ti ti-wand" aria-hidden="true"></i>Generate</button><small id="credits">Log in to get 10 free credits</small></div>
+ <div class="out" id="out">Your result will appear here.</div>
+</section>
+
+<section id="pricing">
+ <h2>Simple pricing</h2>
+ <p class="sub">Start free. Upgrade when you need more credits.</p>
+ <div class="plans">
+  <div class="plan"><h4>Free</h4><div class="price">$0</div><p>10 credits to try</p><a class="btn ghost sm" href="#studio">Start free</a></div>
+  <div class="plan pop"><h4>Pro · most popular</h4><div class="price">$19<small>/mo</small></div><p>500 credits, all tools</p><a class="btn sm" href="#studio">Choose Pro</a></div>
+  <div class="plan"><h4>Studio</h4><div class="price">$49<small>/mo</small></div><p>2,000 credits, priority queue</p><a class="btn ghost sm" href="#studio">Choose Studio</a></div>
+ </div>
+</section>
+
+<footer><span>Lumora</span><span>Terms · Privacy · Contact</span></footer>
+</div>
+
+<dialog id="auth"><h3 id="authTitle">Create your account</h3>
+<form id="authForm" method="dialog"><input id="em" type="email" placeholder="name@company.com" autocomplete="email" required>
+<input id="pw" type="password" placeholder="At least 8 characters" autocomplete="current-password" required>
+<div class="err" id="authErr"></div>
+<div style="display:flex;gap:10px"><button class="btn" id="authGo" type="submit">Sign up</button><button class="btn ghost" type="button" id="authX">Cancel</button></div></form>
+<button class="swap" id="swap" type="button">Already have an account? Log in</button></dialog>
+<script>
+let tool="Image",token=localStorage.getItem("lumora_token"),user=null,mode="signup";
+const $=s=>document.querySelector(s);
+const api=async(url,body)=>{const r=await fetch(url,{method:body?"POST":"GET",headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})},body:body?JSON.stringify(body):undefined});const d=await r.json().catch(()=>({}));if(!r.ok)throw Object.assign(new Error(d.error||"Something went wrong."),{status:r.status});return d};
+function render(){const n=$("#navUser");
+ if(user){n.innerHTML='<span style="font-size:13px;color:var(--muted)">'+user.credits+' credits</span><button class="btn ghost sm" id="outBtn">Log out</button>';$("#outBtn").onclick=()=>{token=null;user=null;localStorage.removeItem("lumora_token");render()};$("#credits").textContent=user.credits+" credits left"}
+ else{n.innerHTML='<button class="swap" id="loginBtn" style="color:var(--muted);font-size:14px;margin:0">Log in</button><button class="btn sm" id="signupBtn">Get started</button>';$("#loginBtn").onclick=()=>openAuth("login");$("#signupBtn").onclick=()=>openAuth("signup");$("#credits").textContent="Log in to get 10 free credits"}}
+function openAuth(m){mode=m;const s=m==="signup";$("#authTitle").textContent=s?"Create your account":"Welcome back";$("#authGo").textContent=s?"Sign up":"Log in";$("#swap").textContent=s?"Already have an account? Log in":"New here? Create an account";$("#authErr").textContent="";$("#auth").showModal()}
+$("#swap").onclick=()=>openAuth(mode==="signup"?"login":"signup");
+$("#authX").onclick=()=>$("#auth").close();
+$("#authForm").addEventListener("submit",async e=>{e.preventDefault();try{const d=await api("/api/"+(mode==="signup"?"register":"login"),{email:$("#em").value,password:$("#pw").value});token=d.token;user=d.user;localStorage.setItem("lumora_token",token);$("#auth").close();render()}catch(x){$("#authErr").textContent=x.message}});
+document.querySelectorAll(".tool").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".tool").forEach(x=>x.classList.remove("on"));b.classList.add("on");tool=b.dataset.t;$("#studioTitle").textContent=tool+" studio";$("#prompt").placeholder=b.dataset.ph;$("#studio").scrollIntoView({behavior:"smooth",block:"center"})}));
+$("#go").addEventListener("click",async()=>{const p=$("#prompt").value.trim(),out=$("#out");
+ if(!token){openAuth("signup");return}
+ if(!p){out.textContent="Enter a prompt first.";return}
+ const btn=$("#go");btn.disabled=true;out.textContent="Generating… video can take a minute.";
+ try{const d=await api("/api/generate",{tool,prompt:p});out.innerHTML="";
+  if(d.type==="text"){const pre=document.createElement("pre");pre.textContent=d.text;out.appendChild(pre)}
+  else{const el=document.createElement(d.type==="image"?"img":d.type==="voice"?"audio":"video");el.src=d.url;if(d.type!=="image")el.controls=true;else el.alt=p;out.appendChild(el);const a=document.createElement("a");a.href=d.url;a.download="lumora-"+d.type;a.className="btn ghost sm";a.style.marginTop="12px";a.textContent="Download";out.appendChild(a)}
+  user.credits=d.credits;render()}
+ catch(x){if(x.status===401){token=null;user=null;render();openAuth("login")}out.textContent=x.message}
+ btn.disabled=false});
+if(token)api("/api/me").then(d=>{user=d.user;render()}).catch(()=>{token=null;localStorage.removeItem("lumora_token")});
+render();
+</script>
+</body>
+</html>
