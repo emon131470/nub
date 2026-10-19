@@ -7,6 +7,7 @@ import Database from "better-sqlite3";
 import { InferenceClient } from "@huggingface/inference";
 import path from "node:path";
 import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
 const { HF_TOKEN, JWT_SECRET, ADMIN_KEY, DB_PATH = "./data.db", FREE_CREDITS = "10" } = process.env;
 if (!HF_TOKEN || !JWT_SECRET) { console.error("Set HF_TOKEN and JWT_SECRET in .env"); process.exit(1); }
@@ -28,7 +29,15 @@ const hf = new InferenceClient(HF_TOKEN);
 const app = express();
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "20kb" }));
-const __dir = path.dirname(fileURLToPath(import.meta.url)); const pubDir = path.join(__dir, "public"); app.use(express.static(pubDir)); app.get("/", (req, res) => {   const f = fs.existsSync(path.join(pubDir, "index.html")) ? path.join(pubDir, "index.html") : path.join(__dir, "index.html");   res.sendFile(f); });
+const __dir = path.dirname(fileURLToPath(import.meta.url));
+const pubDir = path.join(__dir, "public");
+app.use(express.static(pubDir));
+app.get("/", (req, res) => {
+  const a = path.join(pubDir, "index.html"), b = path.join(__dir, "index.html");
+  const f = fs.existsSync(a) ? a : fs.existsSync(b) ? b : null;
+  if (!f) return res.status(500).send("index.html not found. Files here: " + fs.readdirSync(__dir).join(", "));
+  res.sendFile(f);
+});
 
 const sign = u => jwt.sign({ id: u.id }, JWT_SECRET, { expiresIn: "30d" });
 const pub = u => ({ email: u.email, credits: u.credits });
