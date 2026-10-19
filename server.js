@@ -123,5 +123,10 @@ app.post("/api/admin/credits", (req, res) => {
   res.json({ updated: r.changes });
 });
 
+app.use("/api", (req, res) => res.status(404).json({ error: "API route not found: " + req.method + " " + req.originalUrl }));
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: "Server error: " + (err?.message || err) });
+});
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log("Lumora running on port " + port));
