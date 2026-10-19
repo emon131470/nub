@@ -1,184 +1,157 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Studio — All-in-One AI</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0b1020;
-      color: #f4f6ff;
-    }
-    header {
-      padding: 20px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #252d43;
-      gap: 16px;
-    }
-    .logo { font-size: 23px; font-weight: bold; }
-    .logo span { color: #8b7cff; }
-    .tag { color: #aab3ca; font-size: 13px; }
-    main { max-width: 1100px; margin: auto; padding: 45px 20px; }
-    .hero { text-align: center; margin-bottom: 35px; }
-    .hero h1 { font-size: clamp(30px, 5vw, 52px); margin: 0 0 15px; }
-    .hero h1 span { color: #9a8cff; }
-    .hero p { color: #b1bad0; line-height: 1.7; }
-    .tools {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-    .tool {
-      background: #131b30;
-      border: 1px solid #29334d;
-      border-radius: 16px;
-      padding: 22px;
-    }
-    .emoji { font-size: 32px; }
-    .tool p { color: #aab4cc; line-height: 1.5; min-height: 42px; }
-    button {
-      background: #7867ff;
-      color: white;
-      border: 0;
-      border-radius: 9px;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button:hover { background: #9285ff; }
-    .panel {
-      margin-top: 28px;
-      padding: 22px;
-      background: #131b30;
-      border: 1px solid #29334d;
-      border-radius: 16px;
-    }
-    input, textarea {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      border: 1px solid #39445e;
-      border-radius: 8px;
-      background: #0b1020;
-      color: white;
-    }
-    textarea { min-height: 100px; resize: vertical; }
-    #status { color: #b9c4da; line-height: 1.6; overflow-wrap: anywhere; }
-    footer { text-align: center; padding: 30px; color: #8e99b3; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumora | Create images, videos and voices in seconds</title>
+<meta name="description" content="One workspace for creators and brands. Type an idea, get a finished result.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root{--bg:#0B0F1A;--card:#121827;--line:#1F2937;--text:#F3F4F6;--muted:#9CA3AF;--lime:#C8FF2E;--lime-soft:#D9FF6B;--ink:#0B0F1A}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;line-height:1.6}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.logo i{width:28px;height:28px;border-radius:8px;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-size:17px}
+.links{display:flex;gap:26px;color:var(--muted);font-size:14px}
+.links a:hover{color:var(--text)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:500 14px 'Space Grotesk',sans-serif;padding:10px 18px;border-radius:8px;background:var(--lime);color:var(--ink);transition:transform .15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid #374151}
+.btn.sm{padding:7px 14px;font-size:13px}
+.hero{text-align:center;padding:72px 0 44px}
+.badge{display:inline-block;font-size:12px;color:var(--lime-soft);background:#1A2508;border:1px solid #3A4D12;padding:4px 12px;border-radius:20px;margin-bottom:22px}
+h1{font-size:clamp(34px,6vw,60px);line-height:1.1;font-weight:700;letter-spacing:-.02em}
+h1 span{color:var(--lime)}
+.hero p{color:var(--muted);max-width:480px;margin:18px auto 28px;font-size:17px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:20px 0 64px}
+.tile{height:150px;border-radius:12px;position:relative;display:flex;align-items:flex-end;padding:10px}
+.tile em{font-style:normal;font-size:12px;background:#0B0F1Acc;padding:3px 9px;border-radius:6px}
+.tile i{position:absolute;top:10px;right:10px;color:var(--lime);font-size:20px}
+h2{font-size:28px;font-weight:500;margin-bottom:6px}
+.sub{color:var(--muted);margin-bottom:22px}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:64px}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;text-align:left;color:var(--text);font-family:inherit;cursor:pointer;transition:border-color .15s}
+.tool:hover,.tool.on{border-color:var(--lime)}
+.tool i{font-size:26px;color:var(--lime)}
+.tool b{display:block;font-weight:500;margin:10px 0 4px;font-size:17px}
+.tool span{font-size:13px;color:var(--muted)}
+.studio{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:64px}
+.studio h3{font-weight:500;font-size:20px;margin-bottom:12px}
+textarea{width:100%;min-height:96px;background:var(--bg);border:1px solid #374151;border-radius:10px;color:var(--text);font:400 15px 'Space Grotesk',sans-serif;padding:12px;resize:vertical}
+.row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.row small{color:var(--muted)}
+.out{margin-top:16px;border:1px dashed #374151;border-radius:10px;padding:18px;color:var(--muted);font-size:14px;min-height:64px}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:72px}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+.plan.pop{border:2px solid var(--lime)}
+.plan h4{font-weight:500;color:var(--muted);font-size:14px}
+.plan.pop h4{color:var(--lime-soft)}
+.price{font-size:36px;font-weight:700;margin:6px 0}
+.price small{font-size:14px;color:var(--muted);font-weight:400}
+.plan p{font-size:14px;color:var(--muted);margin-bottom:16px}
+footer{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;color:#6B7280;font-size:13px;flex-wrap:wrap;gap:8px}
+@media(max-width:800px){.gallery,.tools{grid-template-columns:repeat(2,1fr)}.plans{grid-template-columns:1fr}.links{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
 </head>
 <body>
-  <header>
-    <div class="logo">AI <span>STUDIO</span></div>
-    <div class="tag">Your creative AI workspace</div>
-  </header>
+<div class="wrap">
+<nav>
+ <a class="logo" href="#"><i class="ti ti-sparkles" aria-hidden="true"></i>Lumora</a>
+ <div class="links"><a href="#tools">Tools</a><a href="#gallery">Gallery</a><a href="#pricing">Pricing</a></div>
+ <div style="display:flex;gap:10px;align-items:center"><a href="#" style="color:var(--muted);font-size:14px">Log in</a><a class="btn sm" href="#studio">Get started</a></div>
+</nav>
 
-  <main>
-    <section class="hero">
-      <h1>One Platform. <span>Many AI Tools.</span></h1>
-      <p>Create images, videos, advertisements and audio from one workspace.</p>
-      <p>We are building the first version of your AI platform.</p>
-    </section>
+<header class="hero">
+ <div class="badge">New: video generation is live</div>
+ <h1>Create stunning images, videos<br>and voices in <span>seconds</span></h1>
+ <p>One workspace for creators and brands. Type an idea, get a finished result.</p>
+ <div class="cta"><a class="btn" href="#studio">Start creating free</a><a class="btn ghost" href="#gallery"><i class="ti ti-player-play" aria-hidden="true"></i>Watch demo</a></div>
+</header>
 
-    <section class="tools">
-      <article class="tool">
-        <div class="emoji">🎨</div>
-        <h2>AI Image</h2>
-        <p>Turn your ideas into images.</p>
-        <button onclick="openTool('AI Image')">Open Tool</button>
-      </article>
+<section class="gallery" id="gallery" aria-label="Sample creations">
+ <div class="tile" style="background:#1C2A10"><em>Portrait</em></div>
+ <div class="tile" style="background:#12332F"><i class="ti ti-player-play" aria-hidden="true"></i><em>Product video</em></div>
+ <div class="tile" style="background:#2A2A0F"><em>Ad poster</em></div>
+ <div class="tile" style="background:#1A2638"><i class="ti ti-player-play" aria-hidden="true"></i><em>Short clip</em></div>
+</section>
 
-      <article class="tool">
-        <div class="emoji">🎬</div>
-        <h2>AI Video</h2>
-        <p>Create video from text prompts.</p>
-        <button onclick="openTool('AI Video')">Open Tool</button>
-      </article>
+<section id="tools">
+ <h2>Everything you need to create</h2>
+ <p class="sub">Pick a tool to start.</p>
+ <div class="tools" id="toolGrid">
+  <button class="tool on" data-t="Image" data-ph="A red sports car on a rainy neon street at night" data-i="ti-photo"><i class="ti ti-photo" aria-hidden="true"></i><b>Image</b><span>Text to image in any style</span></button>
+  <button class="tool" data-t="Video" data-ph="A drone shot over a misty mountain at sunrise" data-i="ti-movie"><i class="ti ti-movie" aria-hidden="true"></i><b>Video</b><span>Turn prompts or photos into clips</span></button>
+  <button class="tool" data-t="Voice" data-ph="Welcome to our store. Today only, everything is 20 percent off." data-i="ti-microphone"><i class="ti ti-microphone" aria-hidden="true"></i><b>Voice</b><span>Natural voiceovers and audio</span></button>
+  <button class="tool" data-t="Ad creator" data-ph="Instagram ad for a handmade coffee brand, warm and friendly" data-i="ti-speakerphone"><i class="ti ti-speakerphone" aria-hidden="true"></i><b>Ad creator</b><span>Ready-to-post campaign assets</span></button>
+ </div>
+</section>
 
-      <article class="tool">
-        <div class="emoji">💬</div>
-        <h2>AI Chat</h2>
-        <p>Ask questions and generate text.</p>
-        <button onclick="openTool('AI Chat')">Open Tool</button>
-      </article>
+<section class="studio" id="studio" aria-live="polite">
+ <h3 id="studioTitle">Image studio</h3>
+ <label for="prompt" class="sub" style="display:block;margin-bottom:8px">Describe what you want to create</label>
+ <textarea id="prompt" placeholder="A red sports car on a rainy neon street at night"></textarea>
+ <div class="row"><button class="btn" id="go"><i class="ti ti-wand" aria-hidden="true"></i>Generate</button><small id="credits">10 free credits</small></div>
+ <div class="out" id="out">Your result will appear here.</div>
+</section>
 
-      <article class="tool">
-        <div class="emoji">📢</div>
-        <h2>AI Ad Creator</h2>
-        <p>Develop ideas for your next campaign.</p>
-        <button onclick="openTool('AI Ad Creator')">Open Tool</button>
-      </article>
+<section id="pricing">
+ <h2>Simple pricing</h2>
+ <p class="sub">Start free. Upgrade when you need more credits.</p>
+ <div class="plans">
+  <div class="plan"><h4>Free</h4><div class="price">$0</div><p>10 credits to try</p><a class="btn ghost sm" href="#studio">Start free</a></div>
+  <div class="plan pop"><h4>Pro · most popular</h4><div class="price">$19<small>/mo</small></div><p>500 credits, all tools</p><a class="btn sm" href="#studio">Choose Pro</a></div>
+  <div class="plan"><h4>Studio</h4><div class="price">$49<small>/mo</small></div><p>2,000 credits, priority queue</p><a class="btn ghost sm" href="#studio">Choose Studio</a></div>
+ </div>
+</section>
 
-      <article class="tool">
-        <div class="emoji">🎙️</div>
-        <h2>AI Audio</h2>
-        <p>Explore voice and audio generation.</p>
-        <button onclick="openTool('AI Audio')">Open Tool</button>
-      </article>
+<footer><span>Lumora</span><span>Terms · Privacy · Contact</span></footer>
+</div>
 
-      <article class="tool">
-        <div class="emoji">🤖</div>
-        <h2>AI Assistant</h2>
-        <p>Get help with creative tasks.</p>
-        <button onclick="openTool('AI Assistant')">Open Tool</button>
-      </article>
-    </section>
-
-    <section class="panel" id="workspace">
-      <h2 id="toolTitle">Backend Connection Test</h2>
-      <p>Backend URL deployment-এর পরে এখানে বসাবে।</p>
-
-      <input id="apiUrl" type="url"
-        placeholder="Python API URL, e.g. https://your-api.example.com">
-
-      <button onclick="testBackend()">Test Backend</button>
-      <p id="status">Backend এখনো configure করা হয়নি।</p>
-    </section>
-  </main>
-
-  <footer>AI Studio · Early Development Version</footer>
-
-  <script>
-    function openTool(name) {
-      document.getElementById("toolTitle").textContent = name;
-      document.getElementById("workspace").scrollIntoView({
-        behavior: "smooth"
-      });
-      document.getElementById("status").textContent =
-        name + " selected. AI generation will be connected in a later step.";
+<script>
+const API_URL = ""; // Add your backend URL here later, e.g. "https://your-backend.example.com/generate"
+let tool = "Image", credits = 10;
+const $ = s => document.querySelector(s);
+document.querySelectorAll(".tool").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll(".tool").forEach(x => x.classList.remove("on"));
+  b.classList.add("on"); tool = b.dataset.t;
+  $("#studioTitle").textContent = tool + " studio";
+  $("#prompt").placeholder = b.dataset.ph;
+  $("#studio").scrollIntoView({behavior:"smooth", block:"center"});
+}));
+$("#go").addEventListener("click", async () => {
+  const p = $("#prompt").value.trim(), out = $("#out");
+  if (!p) { out.textContent = "Enter a prompt first."; return; }
+  if (credits < 1) { out.textContent = "You're out of credits. Choose a plan to continue."; return; }
+  out.textContent = "Generating…";
+  try {
+    if (!API_URL) {
+      await new Promise(r => setTimeout(r, 900));
+      out.textContent = "Demo mode: your " + tool.toLowerCase() + " request \"" + p + "\" was received. Connect a backend in index.html to generate real results.";
+    } else {
+      const res = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({tool, prompt:p})});
+      if (!res.ok) throw new Error("Request failed");
+      const data = await res.json();
+      out.textContent = "";
+      if (data.url) {
+        const el = tool === "Video" ? document.createElement("video") : tool === "Voice" ? document.createElement("audio") : document.createElement("img");
+        el.src = data.url; el.style.maxWidth = "100%"; el.style.borderRadius = "10px";
+        if (el.tagName !== "IMG") el.controls = true;
+        out.appendChild(el);
+      } else out.textContent = data.text || "Done.";
     }
-
-    async function testBackend() {
-      const url = document.getElementById("apiUrl").value
-        .trim().replace(/\/+$/, "");
-      const status = document.getElementById("status");
-
-      if (!url) {
-        status.textContent = "প্রথমে deployed Python API URL বসাও।";
-        return;
-      }
-
-      status.textContent = "Connecting to backend...";
-
-      try {
-        const response = await fetch(url + "/api/health");
-        if (!response.ok) throw new Error("HTTP " + response.status);
-
-        const data = await response.json();
-        status.textContent = "Backend connected: " + data.message;
-      } catch (error) {
-        status.textContent =
-          "Connection failed. URL, backend status and CORS settings check করো.";
-      }
-    }
-  </script>
+    credits--; $("#credits").textContent = credits + " free credits";
+  } catch (e) { out.textContent = "Couldn't generate that. Check your connection and try again."; }
+});
+</script>
 </body>
 </html>
-
