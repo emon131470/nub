@@ -56,14 +56,19 @@ const authLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 30 });
 const genLimit = rateLimit({ windowMs: 60 * 1000, max: 15, keyGenerator: r => String(r.user?.id || r.ip) });
 
 app.post("/api/register", authLimit, (req, res) => {
-  const email = String(req.body.email || "").trim().toLowerCase();
-  const password = String(req.body.password || "");
-  if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error: "Enter a valid email." });
-  if (password.length < 8) return res.status(400).json({ error: "Use a password with at least 8 characters." });
-  if (db.prepare("SELECT 1 FROM users WHERE email=?").get(email)) return res.status(409).json({ error: "That email already has an account. Log in instead." });
-  const info = db.prepare("INSERT INTO users(email,hash,credits) VALUES(?,?,?)").run(email, bcrypt.hashSync(password, 10), Number(FREE_CREDITS));
-  const u = db.prepare("SELECT * FROM users WHERE id=?").get(info.lastInsertRowid);
-  res.json({ token: sign(u), user: pub(u) });
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const password = String(req.body?.password || "");
+    if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error: "Enter a valid email." });
+    if (password.length < 8) return res.status(400).json({ error: "Use a password with at least 8 characters." });
+    if (db.prepare("SELECT 1 FROM users WHERE email=?").get(email)) return res.status(409).json({ error: "That email already has an account. Log in instead." });
+    const info = db.prepare("INSERT INTO users(email,hash,credits) VALUES(?,?,?)").run(email, bcrypt.hashSync(password, 10), Number(FREE_CREDITS));
+    const u = db.prepare("SELECT * FROM users WHERE id=?").get(info.lastInsertRowid);
+    res.json({ token: sign(u), user: pub(u) });
+  } catch (e) {
+    console.error("register failed:", e);
+    res.status(500).json({ error: "Server error: " + (e?.message || e) });
+  }
 });
 
 app.post("/api/login", authLimit, (req, res) => {
