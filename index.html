@@ -1,1 +1,184 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Studio — All-in-One AI</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1020;
+      color: #f4f6ff;
+    }
+    header {
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #252d43;
+      gap: 16px;
+    }
+    .logo { font-size: 23px; font-weight: bold; }
+    .logo span { color: #8b7cff; }
+    .tag { color: #aab3ca; font-size: 13px; }
+    main { max-width: 1100px; margin: auto; padding: 45px 20px; }
+    .hero { text-align: center; margin-bottom: 35px; }
+    .hero h1 { font-size: clamp(30px, 5vw, 52px); margin: 0 0 15px; }
+    .hero h1 span { color: #9a8cff; }
+    .hero p { color: #b1bad0; line-height: 1.7; }
+    .tools {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .tool {
+      background: #131b30;
+      border: 1px solid #29334d;
+      border-radius: 16px;
+      padding: 22px;
+    }
+    .emoji { font-size: 32px; }
+    .tool p { color: #aab4cc; line-height: 1.5; min-height: 42px; }
+    button {
+      background: #7867ff;
+      color: white;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #9285ff; }
+    .panel {
+      margin-top: 28px;
+      padding: 22px;
+      background: #131b30;
+      border: 1px solid #29334d;
+      border-radius: 16px;
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: 1px solid #39445e;
+      border-radius: 8px;
+      background: #0b1020;
+      color: white;
+    }
+    textarea { min-height: 100px; resize: vertical; }
+    #status { color: #b9c4da; line-height: 1.6; overflow-wrap: anywhere; }
+    footer { text-align: center; padding: 30px; color: #8e99b3; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">AI <span>STUDIO</span></div>
+    <div class="tag">Your creative AI workspace</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>One Platform. <span>Many AI Tools.</span></h1>
+      <p>Create images, videos, advertisements and audio from one workspace.</p>
+      <p>We are building the first version of your AI platform.</p>
+    </section>
+
+    <section class="tools">
+      <article class="tool">
+        <div class="emoji">🎨</div>
+        <h2>AI Image</h2>
+        <p>Turn your ideas into images.</p>
+        <button onclick="openTool('AI Image')">Open Tool</button>
+      </article>
+
+      <article class="tool">
+        <div class="emoji">🎬</div>
+        <h2>AI Video</h2>
+        <p>Create video from text prompts.</p>
+        <button onclick="openTool('AI Video')">Open Tool</button>
+      </article>
+
+      <article class="tool">
+        <div class="emoji">💬</div>
+        <h2>AI Chat</h2>
+        <p>Ask questions and generate text.</p>
+        <button onclick="openTool('AI Chat')">Open Tool</button>
+      </article>
+
+      <article class="tool">
+        <div class="emoji">📢</div>
+        <h2>AI Ad Creator</h2>
+        <p>Develop ideas for your next campaign.</p>
+        <button onclick="openTool('AI Ad Creator')">Open Tool</button>
+      </article>
+
+      <article class="tool">
+        <div class="emoji">🎙️</div>
+        <h2>AI Audio</h2>
+        <p>Explore voice and audio generation.</p>
+        <button onclick="openTool('AI Audio')">Open Tool</button>
+      </article>
+
+      <article class="tool">
+        <div class="emoji">🤖</div>
+        <h2>AI Assistant</h2>
+        <p>Get help with creative tasks.</p>
+        <button onclick="openTool('AI Assistant')">Open Tool</button>
+      </article>
+    </section>
+
+    <section class="panel" id="workspace">
+      <h2 id="toolTitle">Backend Connection Test</h2>
+      <p>Backend URL deployment-এর পরে এখানে বসাবে।</p>
+
+      <input id="apiUrl" type="url"
+        placeholder="Python API URL, e.g. https://your-api.example.com">
+
+      <button onclick="testBackend()">Test Backend</button>
+      <p id="status">Backend এখনো configure করা হয়নি।</p>
+    </section>
+  </main>
+
+  <footer>AI Studio · Early Development Version</footer>
+
+  <script>
+    function openTool(name) {
+      document.getElementById("toolTitle").textContent = name;
+      document.getElementById("workspace").scrollIntoView({
+        behavior: "smooth"
+      });
+      document.getElementById("status").textContent =
+        name + " selected. AI generation will be connected in a later step.";
+    }
+
+    async function testBackend() {
+      const url = document.getElementById("apiUrl").value
+        .trim().replace(/\/+$/, "");
+      const status = document.getElementById("status");
+
+      if (!url) {
+        status.textContent = "প্রথমে deployed Python API URL বসাও।";
+        return;
+      }
+
+      status.textContent = "Connecting to backend...";
+
+      try {
+        const response = await fetch(url + "/api/health");
+        if (!response.ok) throw new Error("HTTP " + response.status);
+
+        const data = await response.json();
+        status.textContent = "Backend connected: " + data.message;
+      } catch (error) {
+        status.textContent =
+          "Connection failed. URL, backend status and CORS settings check করো.";
+      }
+    }
+  </script>
+</body>
+</html>
+
