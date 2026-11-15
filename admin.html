@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <title>Admin Panel - INVEXORA</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #0a0e17; --bg-deep: #0b0f19; --surface: #111827; --surface-2: #182033;
+            --line: rgba(180,200,255,0.10); --line-strong: rgba(180,200,255,0.20);
+            --text: #f5f7fb; --muted: #8b94a7; --faint: #5d667a;
+            --gold: #c8ff1e; --gold-light: #c8ff1e; --gold-ink: #0a0e17;
+            --good: #c8ff1e; --bad: #ff6b6b;
+            --serif: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+            --sans: "Space Grotesk", "Segoe UI", Arial, sans-serif;
+            color-scheme: dark;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+
+        [hidden] { display: none !important; }
+
+        h1, h2 { font-family: var(--serif); font-weight: 600; }
+
+        button { font-family: inherit; cursor: pointer; }
+
+        .btn { padding: 11px 22px; border-radius: 10px; border: 1px solid transparent; background: linear-gradient(135deg, #d2ff3a, #b8f200); color: var(--gold-ink); font-size: 14px; font-weight: 600; transition: 0.25s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,255,30,0.30); }
+
+        .btn-ghost { background: transparent; color: var(--text); border-color: var(--line-strong); }
+        .btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); box-shadow: none; }
+
+        /* ---------- LOGIN ---------- */
+        .login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; background: radial-gradient(circle at 50% 0%, rgba(200,255,30,0.16), transparent 50%), var(--bg); }
+
+        .login-box { width: 100%; max-width: 420px; padding: 40px; background: linear-gradient(180deg, var(--surface-2), var(--surface)); border: 1px solid var(--line-strong); border-radius: 20px; box-shadow: 0 30px 80px rgba(0,0,0,0.5); }
+
+        .login-box .tag { display: block; margin: 18px 0 6px; color: var(--gold); font-size: 12px; font-weight: 600; letter-spacing: 1.8px; }
+
+        .login-box h1 { font-size: 30px; margin-bottom: 26px; }
+
+        .field { margin-bottom: 16px; }
+        .field label { display: block; margin-bottom: 7px; color: var(--muted); font-size: 13px; }
+        .field input { width: 100%; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 14px; outline: none; }
+        .field input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(200,255,30,0.18); }
+
+        .login-box .btn { width: 100%; padding: 14px; margin-top: 6px; }
+        .err { min-height: 20px; margin-top: 12px; color: var(--bad); font-size: 13px; }
+
+        /* ---------- PANEL ---------- */
+        .topbar { height: 72px; padding: 0 5%; display: flex; align-items: center; justify-content: space-between; background: var(--bg-deep); border-bottom: 1px solid var(--line); }
+        .topbar .right { display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: 13px; }
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-tag { font-size: 12px; color: var(--faint); letter-spacing: 1.5px; }
+
+        .wrap { max-width: 1250px; margin: 0 auto; padding: 44px 24px 70px; }
+
+        .head h1 { font-size: 34px; }
+        .head p { color: var(--muted); margin-bottom: 30px; }
+
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 34px; }
+        .stat { padding: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+        .stat small { display: block; color: var(--faint); font-size: 13px; margin-bottom: 8px; }
+        .stat strong { font-family: var(--serif); font-size: 30px; font-weight: 600; }
+
+        .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+        .tabs { display: flex; gap: 8px; }
+        .tab { padding: 10px 20px; border-radius: 10px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: 14px; font-weight: 500; transition: 0.25s; }
+        .tab.active { background: var(--surface-2); border-color: var(--gold); color: var(--gold-light); }
+
+        .search { width: 280px; max-width: 100%; padding: 11px 15px; border-radius: 10px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 14px; outline: none; }
+        .search:focus { border-color: var(--gold); }
+
+        .table-box { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th, td { padding: 15px 18px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--line); }
+        th { color: var(--faint); font-size: 12px; font-weight: 600; letter-spacing: 1px; background: #182033; }
+        tr:last-child td { border-bottom: none; }
+        td.muted { color: var(--muted); }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge.Pending  { background: rgba(255,196,71,0.14); color: #ffc447; }
+        .badge.Approved { background: rgba(200,255,30,0.12); color: #c8ff1e; }
+        .badge.Rejected { background: rgba(255,107,107,0.14); color: #ff6b6b; }
+
+        .act { display: flex; gap: 8px; }
+        .act button { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); font-size: 12px; transition: 0.25s; }
+        .act .ok:hover  { border-color: var(--good); color: var(--good); }
+        .act .no:hover  { border-color: var(--bad);  color: var(--bad); }
+
+        .empty { padding: 50px 24px; text-align: center; color: var(--muted); font-size: 14px; }
+
+        @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 520px) { .stats { grid-template-columns: 1fr; } .login-box { padding: 28px; } }
+
+        .cell-input { width: 90px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 13px; outline: none; }
+        .cell-input:focus { border-color: var(--gold-light); }
+
+        .toast { min-height: 22px; margin-bottom: 14px; font-size: 13px; font-weight: 600; }
+        .toast.err { color: var(--bad); }
+        .toast.ok  { color: var(--good); }
+
+        .settings-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 22px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+        .settings-row label { color: var(--muted); font-size: 14px; font-weight: 500; }
+
+        .small { font-size: 12px; color: var(--faint); }
+    
+        /* ---- v2 additions ---- */
+        .tabs { flex-wrap: wrap; }
+        .tab-badge { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 6px; border-radius: 10px; background: #ff4d4d; color: #fff; font-size: 11px; font-weight: 700; line-height: 20px; text-align: center; }
+        .tab-badge[hidden] { display: none; }
+        .badge.Active    { background: rgba(200,255,30,0.12); color: #c8ff1e; }
+        .badge.Suspended { background: rgba(255,107,107,0.14); color: #ff6b6b; }
+        .badge.Running   { background: rgba(200,255,30,0.12); color: #c8ff1e; }
+        .badge.Completed { background: #1f2a40; color: #aab3c7; }
+        .act button.warn:hover { border-color: #ffc447; color: #ffc447; }
+        .chk { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 14px; }
+        .chk input { width: 17px; height: 17px; accent-color: #c8ff1e; }
+        .panel { margin-top: 22px; padding: 22px; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+        .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+        .panel-head h3 { font-family: var(--serif); font-size: 20px; }
+        .mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+        .mini-stats div { padding: 14px 16px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); }
+        .mini-stats small { display: block; color: var(--faint); font-size: 12px; }
+        .mini-stats strong { font-family: var(--serif); font-size: 20px; }
+        .sub-h { margin: 18px 0 8px; font-size: 13px; letter-spacing: 1px; color: var(--faint); font-weight: 600; }
+        .panel table { min-width: 640px; }
+        .thread { display: flex; flex-direction: column; gap: 10px; max-height: 360px; overflow-y: auto; padding: 14px; border-radius: 12px; background: #0b0f19; border: 1px solid var(--line); }
+        .bubble { max-width: 78%; padding: 10px 14px; border-radius: 14px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+        .bubble.user { align-self: flex-start; background: #182033; color: #f5f7fb; border-bottom-left-radius: 4px; }
+        .bubble.admin { align-self: flex-end; background: linear-gradient(135deg, #dfff3d, #c6f400); color: #0a0e17; border-bottom-right-radius: 4px; }
+        .bmeta { font-size: 11px; color: var(--faint); margin-top: 3px; }
+        .bwrap { display: flex; flex-direction: column; }
+        .bwrap.admin { align-items: flex-end; }
+        .reply-box { display: flex; gap: 10px; margin-top: 14px; }
+        .reply-box textarea { flex: 1; padding: 11px 13px; border-radius: 10px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 14px; outline: none; resize: vertical; }
+        .reply-box textarea:focus { border-color: var(--gold); }
+        .unread-dot { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 10px; background: #ff4d4d; color: #fff; font-size: 11px; font-weight: 700; line-height: 20px; text-align: center; }
+        .code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; color: var(--muted); word-break: break-all; }
+        @media (max-width: 900px) { .mini-stats { grid-template-columns: repeat(2, 1fr); } }
+        .cms-field { margin-bottom: 14px; }
+        .cms-field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 13px; }
+        .cms-field input[type=text], .cms-field input[type=url], .cms-field input[type=number], .cms-field input[type=datetime-local], .cms-field select, .cms-field textarea { width: 100%; padding: 11px 13px; border-radius: 10px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 14px; outline: none; }
+        .cms-field textarea { resize: vertical; min-height: 70px; }
+        .cms-field input:focus, .cms-field select:focus, .cms-field textarea:focus { border-color: var(--gold); }
+        .cms-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; }
+        .cms-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+        .faq-row { padding: 14px; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
+        .faq-row .cms-field { margin-bottom: 8px; }
+        .badge.Live      { background: rgba(200,255,30,0.12); color: #c8ff1e; }
+        .badge.Scheduled { background: rgba(86,170,255,0.14); color: #7bbcff; }
+        .badge.Expired   { background: #1f2a40; color: #aab3c7; }
+        .badge.Off       { background: rgba(255,196,71,0.14); color: #ffc447; }
+        .hint { color: var(--faint); font-size: 12px; margin-top: 4px; }
+        @media (max-width: 700px) { .cms-grid { grid-template-columns: 1fr; } }
+        .tier-badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+        .tier-badge.bronze  { background: rgba(205,127,50,0.18); color: #e6a26a; border: 1px solid rgba(205,127,50,0.45); }
+        .tier-badge.silver  { background: rgba(200,210,225,0.14); color: #d6dde9; border: 1px solid rgba(200,210,225,0.4); }
+        .tier-badge.gold    { background: rgba(255,196,71,0.16); color: #ffd466; border: 1px solid rgba(255,196,71,0.5); }
+        .tier-badge.diamond { background: rgba(120,220,255,0.14); color: #8fe6ff; border: 1px solid rgba(120,220,255,0.5); }
+        .tier-badge.platinum { background: rgba(130,220,255,0.14); color: #9fe7ff; border: 1px solid rgba(130,220,255,0.5); }
+        .badge.Verified   { background: rgba(200,255,30,0.12); color: #c8ff1e; }
+        .badge.Unverified { background: #1f2a40; color: #aab3c7; }
+        .chips { display: flex; gap: 8px; flex-wrap: wrap; padding: 16px 18px; }
+        .chip { padding: 7px 16px; border-radius: 20px; border: 1px solid var(--line-strong); background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; }
+        .chip.active { border-color: var(--gold); color: var(--gold-light); background: var(--surface-2); }
+        .kyc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+        .kv { display: grid; grid-template-columns: 150px 1fr; gap: 8px 14px; font-size: 14px; }
+        .kv dt { color: var(--faint); }
+        .kv dd { color: var(--text); word-break: break-word; }
+        .kyc-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .kyc-img { border: 1px solid var(--line-strong); border-radius: 12px; overflow: hidden; background: #0b0f19; cursor: zoom-in; }
+        .kyc-img img { display: block; width: 100%; height: 170px; object-fit: cover; }
+        .kyc-img span { display: block; padding: 6px 10px; font-size: 12px; color: var(--faint); }
+        .kyc-img.wide { grid-column: 1 / -1; }
+        .lightbox { position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(0,0,0,0.88); cursor: zoom-out; }
+        .lightbox[hidden] { display: none; }
+        .lightbox img { max-width: 100%; max-height: 100%; border-radius: 10px; }
+        .warn-note { margin: 10px 0; padding: 10px 14px; border-radius: 10px; background: rgba(255,196,71,0.12); color: #ffd98a; font-size: 13px; }
+        .reject-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+        .reject-row input { flex: 1; min-width: 220px; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: #0b0f19; color: var(--text); font-family: inherit; font-size: 14px; outline: none; }
+        @media (max-width: 900px) { .kyc-grid { grid-template-columns: 1fr; } }
+    </style>
+
+</head>
+<body data-nochat>
+
+<!-- ================= LOGIN ================= -->
+<div class="login-wrap" id="loginView">
+
+    <form class="login-box" id="adminLoginForm" novalidate>
+
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgNTYiIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0iSU5WRVhPUkEiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Q2ZmY0YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I4ZjIwMCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsNCkgc2NhbGUoMC43NSkiPgogICAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9InVybCgjZykiLz4KICAgIDxwYXRoIGQ9Ik0xNiA0MiBMMjggMzAgTDM2IDM3IEw1MCAyMCIgc3Ryb2tlPSIjMGEwZTE3IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggZD0iTTQwIDIwIEg1MCBWMzAiIHN0cm9rZT0iIzBhMGUxNyIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGZpbGw9Im5vbmUiLz4KICA8L2c+CiAgPHRleHQgeD0iNTgiIHk9IjM2IiBmb250LWZhbWlseT0iJ1NwYWNlIEdyb3Rlc2snLCAnU2Vnb2UgVUknLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI3IiBmb250LXdlaWdodD0iNzAwIiBsZXR0ZXItc3BhY2luZz0iMSIgdGV4dExlbmd0aD0iMTg2IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiIGZpbGw9IiNmZmZmZmYiPklOVkU8dHNwYW4gZmlsbD0iI2M4ZmYxZSI+WE9SQTwvdHNwYW4+PC90ZXh0PgogIDx0ZXh0IHg9IjU5IiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjcuNSIgbGV0dGVyLXNwYWNpbmc9IjMuMiIgZmlsbD0iIzdkODY5YSI+U01BUlQgSU5WRVNUTUVOVDwvdGV4dD4KPC9zdmc+Cg==" alt="INVEXORA" style="display:block;height:44px;width:auto">
+
+        <span class="tag">ADMIN ACCESS</span>
+        <h1>Admin Login</h1>
+
+        <div class="field">
+            <label for="adminEmail">Admin email</label>
+            <input type="email" id="adminEmail" autocomplete="email" required>
+        </div>
+
+        <div class="hp" aria-hidden="true" style="position:absolute;left:-9999px"><input type="text" name="website" tabindex="-1" autocomplete="off"></div>
+
+        <button type="submit" class="btn" id="adminLoginBtn">Send Login Code</button>
+
+        <p class="err" id="loginErr"></p>
+
+    </form>
+
+</div>
+
+
+<!-- ================= PANEL ================= -->
+<div id="panelView" hidden>
+
+    <header class="topbar">
+        <div class="brand">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgNTYiIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0iSU5WRVhPUkEiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Q2ZmY0YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I4ZjIwMCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsNCkgc2NhbGUoMC43NSkiPgogICAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9InVybCgjZykiLz4KICAgIDxwYXRoIGQ9Ik0xNiA0MiBMMjggMzAgTDM2IDM3IEw1MCAyMCIgc3Ryb2tlPSIjMGEwZTE3IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggZD0iTTQwIDIwIEg1MCBWMzAiIHN0cm9rZT0iIzBhMGUxNyIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGZpbGw9Im5vbmUiLz4KICA8L2c+CiAgPHRleHQgeD0iNTgiIHk9IjM2IiBmb250LWZhbWlseT0iJ1NwYWNlIEdyb3Rlc2snLCAnU2Vnb2UgVUknLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI3IiBmb250LXdlaWdodD0iNzAwIiBsZXR0ZXItc3BhY2luZz0iMSIgdGV4dExlbmd0aD0iMTg2IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiIGZpbGw9IiNmZmZmZmYiPklOVkU8dHNwYW4gZmlsbD0iI2M4ZmYxZSI+WE9SQTwvdHNwYW4+PC90ZXh0PgogIDx0ZXh0IHg9IjU5IiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjcuNSIgbGV0dGVyLXNwYWNpbmc9IjMuMiIgZmlsbD0iIzdkODY5YSI+U01BUlQgSU5WRVNUTUVOVDwvdGV4dD4KPC9zdmc+Cg==" alt="INVEXORA" style="display:block;height:38px;width:auto">
+            <span class="brand-tag">ADMIN</span>
+        </div>
+        <div class="right">
+            <span id="adminName"></span>
+            <a href="index.html" style="color:var(--muted);">View site</a>
+            <button class="btn btn-ghost" id="logoutBtn">Logout</button>
+        </div>
+    </header>
+
+    <main class="wrap">
+
+        <div class="head">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+                <h1>Dashboard</h1>
+                <a class="btn" href="customizer.html" style="text-decoration:none;display:inline-block">Website Customizer ↗</a>
+            </div>
+            <p>Review deposits and withdrawals, manage users, answer support messages and edit plans. Everything here is virtual (demo).</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><small>Users</small><strong id="statUsers">0</strong></div>
+            <div class="stat"><small>Pending Deposits</small><strong id="statDeposits">0</strong></div>
+            <div class="stat"><small>Pending Withdrawals</small><strong id="statWithdrawals">0</strong></div>
+            <div class="stat"><small>Approved Deposits</small><strong id="statAmount">$0</strong></div>
+        </div>
+
+        <div class="toolbar">
+            <div class="tabs">
+                <button class="tab active" data-tab="deposits">Deposits</button>
+                <button class="tab" data-tab="withdrawals">Withdrawals</button>
+                <button class="tab" data-tab="users">Users</button>
+                <button class="tab" data-tab="referrals">Referrals</button>
+                <button class="tab" data-tab="verification">Verification <span class="tab-badge" id="kycBadge" hidden>0</span></button>
+                <button class="tab" data-tab="support">Support <span class="tab-badge" id="supportBadge" hidden>0</span></button>
+                <button class="tab" data-tab="content">Content</button>
+                <button class="tab" data-tab="banners">Banners</button>
+                <button class="tab" data-tab="plans">Plans</button>
+                <button class="tab" data-tab="activity">Activity</button>
+            </div>
+            <input type="search" class="search" id="searchBox" placeholder="Search...">
+        </div>
+
+        <p class="toast" id="toast" role="status"></p>
+
+        <div class="table-box" id="tableBox"></div>
+
+        <div id="detailBox"></div>
+
+        <div class="settings-row" id="settingsRow" hidden>
+            <label for="minWithdraw">Minimum withdrawal (USD)</label>
+            <input type="number" class="cell-input" id="minWithdraw" min="0" step="0.01">
+            <label class="chk"><input type="checkbox" id="returnPrincipal"> Return the invested amount when a plan ends</label>
+            <label class="chk"><input type="checkbox" id="requireKyc"> Only verified accounts can withdraw</label>
+            <button class="btn" id="saveSettings">Save</button>
+        </div>
+
+    </main>
+
+</div>
+
+
+<div class="lightbox" id="lightbox" hidden><img alt="" id="lightboxImg"></div>
+
+<script src="app.js"></script>
+
+<script>
+
+    var ctx = null;
+    var currentTab = "deposits";
+    var cache = { deposits: [], withdrawals: [], users: [], plans: [], settings: null, threads: [], audit: [], content: {}, banners: [], rd: null, kyc: [] };
+    var refFilter = "referrers", kycFilter = "pending";
+    var openUser = null;        // user id of the open support thread
+    var threadTimer = null;
+
+    function $(id) { return document.getElementById(id); }
+
+    function esc(s) {
+        return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                                         .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    function money(n) {
+        return "$" + Number(n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
+    }
+
+    function fmtDate(d) {
+        var x = new Date(d);
+        return isNaN(x) ? "-" : x.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    function fmtTime(d) {
+        var x = new Date(d);
+        return isNaN(x) ? "-" : x.toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+    }
+
+    function cap(s) {
+        s = String(s || "");
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    function cut(s, n) {
+        s = String(s == null ? "" : s);
+        return s.length > n ? s.slice(0, n) + "..." : s;
+    }
+
+    function toast(text, ok) {
+        $("toast").textContent = text || "";
+        $("toast").className = "toast " + (text ? (ok ? "ok" : "err") : "");
+    }
+
+    function userLabel(p) {
+        if (!p) return "<span class='muted'>-</span>";
+        var name = ((p.first_name || "") + " " + (p.last_name || "")).trim();
+        return esc(name || p.email) + "<div class='small'>" + esc(p.email) + "</div>";
+    }
+
+    function nameOf(u) {
+        return u ? (((u.first_name || "") + " " + (u.last_name || "")).trim() || u.email) : "-";
+    }
+
+
+    /* ===== LOGIN ===== */
+    function showLogin(note) {
+        $("panelView").hidden = true;
+        $("loginView").hidden = false;
+        $("loginErr").textContent = note || "";
+    }
+
+    async function showPanel() {
+        $("loginView").hidden = true;
+        $("panelView").hidden = false;
+        $("adminName").textContent = ctx.profile ? ctx.profile.email : "";
+        await refresh();
+        startAdminRealtime();
+        clearInterval(window._pollTimer);
+        window._pollTimer = setInterval(function () { if (!document.hidden) pollSupport(); }, 20000);
+    }
+
+    async function isAdminNow() {
+
+        var s = (await ctx.sb.auth.getSession()).data.session;
+        if (!s) return false;
+
+        var p = await ctx.sb.from("profiles").select("*").eq("id", s.user.id).maybeSingle();
+        ctx.session = s;
+        ctx.profile = p.data || null;
+
+        return !!(ctx.profile && ctx.profile.role === "admin");
+    }
+
+    $("adminLoginForm").addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        var hp = $("adminLoginForm").querySelector('input[name="website"]');
+        if (hp && hp.value) return;
+
+        var btn = $("adminLoginBtn");
+        btn.disabled = true;
+        $("loginErr").textContent = "";
+
+        var res = await IPAuth.login($("adminEmail").value);
+
+        if (!res.ok) {
+            $("loginErr").textContent = res.error;
+            btn.disabled = false;
+            return;
+        }
+
+        if (!(await isAdminNow())) {
+            await ctx.sb.auth.signOut();
+            $("loginErr").textContent = "This account is not an admin.";
+            btn.disabled = false;
+            return;
+        }
+
+        btn.disabled = false;
+        showPanel();
+    });
+
+    $("logoutBtn").addEventListener("click", async function () {
+        clearInterval(window._pollTimer);
+        clearInterval(threadTimer);
+        stopAdminRealtime();
+        await ctx.sb.auth.signOut();
+        showLogin();
+    });
+
+
+    /* ===== LOAD DATA ===== */
+    async function loadStats() {
+
+        var r = await ctx.sb.rpc("admin_stats");
+        if (r.error) { toast(r.error.message, false); return; }
+
+        $("statUsers").textContent       = r.data.users;
+        $("statDeposits").textContent    = r.data.pending_deposits;
+        $("statWithdrawals").textContent = r.data.pending_withdrawals;
+        $("statAmount").textContent      = money(r.data.approved_deposits);
+    }
+
+    async function loadThreads() {
+
+        var r = await ctx.sb.rpc("admin_support_threads");
+        if (r.error) return r;
+
+        cache.threads = r.data || [];
+
+        var unread = cache.threads.reduce(function (s, t) { return s + Number(t.t_unread || 0); }, 0);
+        $("supportBadge").textContent = unread > 99 ? "99+" : unread;
+        $("supportBadge").hidden = unread < 1;
+
+        return r;
+    }
+
+    async function loadTab() {
+
+        var sb = ctx.sb, r;
+
+        if (currentTab === "deposits") {
+            r = await sb.from("deposits")
+                .select("*, plans(name), profiles!deposits_user_id_fkey(email, first_name, last_name)")
+                .order("created_at", { ascending: false });
+            if (!r.error) cache.deposits = r.data;
+        }
+
+        if (currentTab === "withdrawals") {
+            r = await sb.from("withdrawals")
+                .select("*, profiles!withdrawals_user_id_fkey(email, first_name, last_name)")
+                .order("created_at", { ascending: false });
+            if (!r.error) cache.withdrawals = r.data;
+        }
+
+        if (currentTab === "users") {
+            r = await sb.from("profiles").select("*").order("created_at", { ascending: false });
+            if (!r.error) {
+                cache.users = r.data;
+                await loadRefData();
+                var kr = await sb.from("kyc_submissions").select("*").order("submitted_at", { ascending: false });
+                cache.kyc = kr.error ? [] : kr.data;
+            }
+        }
+
+        if (currentTab === "referrals" || currentTab === "verification") {
+            await loadRefData();
+            if (currentTab === "verification") {
+                r = await sb.from("kyc_submissions").select("*").order("submitted_at", { ascending: false });
+                if (!r.error) cache.kyc = r.data; else cache.kyc = [];
+                if (r.error && /relation|does not exist|schema cache|Unknown table/i.test(r.error.message)) r = null;
+            }
+        }
+
+        if (currentTab === "plans") {
+            r = await sb.from("plans").select("*").order("sort_order");
+            if (!r.error) cache.plans = r.data;
+
+            var st = await sb.from("settings").select("*").eq("id", 1).maybeSingle();
+            if (st.data) {
+                cache.settings = st.data;
+                $("minWithdraw").value = st.data.min_withdraw;
+                $("returnPrincipal").checked = !!st.data.return_principal;
+                $("requireKyc").checked = !!st.data.require_kyc_withdraw;
+                $("requireKyc").disabled = (st.data.require_kyc_withdraw === undefined);
+            }
+        }
+
+        if (currentTab === "support") {
+            r = await loadThreads();
+        }
+
+        if (currentTab === "activity") {
+            if (!cache.users.length) {
+                var u = await sb.from("profiles").select("*");
+                if (!u.error) cache.users = u.data;
+            }
+            r = await sb.from("audit_log").select("*").order("id", { ascending: false }).limit(200);
+            if (!r.error) cache.audit = r.data;
+        }
+
+        if (currentTab === "content") {
+            r = await sb.from("site_content").select("key, value");
+            if (!r.error) {
+                cache.content = {};
+                r.data.forEach(function (x) { cache.content[x.key] = x.value; });
+            }
+        }
+
+        if (currentTab === "banners") {
+            r = await sb.from("banners").select("*").order("sort_order", { ascending: true });
+            if (!r.error) cache.banners = r.data;
+        }
+
+        if (r && r.error) toast("Could not load data: " + r.error.message, false);
+    }
+
+    async function refresh() {
+        await Promise.all([loadStats(), loadTab(), currentTab === "support" ? Promise.resolve() : loadThreads(), loadKycBadge()]);
+        render();
+    }
+
+    async function pollSupport() {
+        await loadThreads();
+        if (currentTab === "support") {
+            renderSupport();
+            if (openUser) await loadThread(openUser, true);
+        }
+    }
+
+
+    /* ===== RENDER ===== */
+    function render() {
+
+        $("settingsRow").hidden = (currentTab !== "plans");
+
+        var q = $("searchBox").value.trim().toLowerCase();
+
+        if (currentTab === "deposits")    renderDeposits(q);
+        if (currentTab === "withdrawals") renderWithdrawals(q);
+        if (currentTab === "users")       renderUsers(q);
+        if (currentTab === "plans")       renderPlans();
+        if (currentTab === "support")     renderSupport(q);
+        if (currentTab === "activity")    renderActivity(q);
+        if (currentTab === "content")     renderContentTab();
+        if (currentTab === "banners")     renderBanners(q);
+        if (currentTab === "referrals")   renderReferrals(q);
+        if (currentTab === "verification") renderVerification(q);
+    }
+
+    function matches(obj, q) {
+        return !q || JSON.stringify(obj).toLowerCase().indexOf(q) > -1;
+    }
+
+    function actionButtons(kind, id) {
+        return "<div class='act'>" +
+            "<button class='ok' data-kind='" + kind + "' data-id='" + id + "' data-approve='true'>Approve</button>" +
+            "<button class='no' data-kind='" + kind + "' data-id='" + id + "' data-approve='false'>Reject</button>" +
+            "</div>";
+    }
+
+    function renderDeposits(q) {
+
+        var rows = cache.deposits.filter(function (d) { return matches(d, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = '<div class="empty">No deposit requests.</div>'; return; }
+
+        var html = "<table><thead><tr><th>DATE</th><th>USER</th><th>PLAN</th><th>AMOUNT</th><th>METHOD</th><th>NOTE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (d) {
+            var st = cap(d.status);
+            html += "<tr>" +
+                "<td class='muted'>" + fmtDate(d.created_at) + "</td>" +
+                "<td>" + userLabel(d.profiles) + "</td>" +
+                "<td>" + esc(d.plans ? d.plans.name : d.plan_id) + "</td>" +
+                "<td><b>" + money(d.amount) + "</b></td>" +
+                "<td class='muted'>" + esc(d.payment_method || "-") + "</td>" +
+                "<td class='muted'>" + esc(d.note || "-") + "</td>" +
+                "<td><span class='badge " + st + "'>" + st + "</span></td>" +
+                "<td>" + (d.status === "pending" ? actionButtons("deposit", d.id) : "<span class='small'>Reviewed</span>") + "</td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    function renderWithdrawals(q) {
+
+        var rows = cache.withdrawals.filter(function (w) { return matches(w, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = '<div class="empty">No withdrawal requests.</div>'; return; }
+
+        var html = "<table><thead><tr><th>DATE</th><th>USER</th><th>AMOUNT</th><th>METHOD</th><th>NOTE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (w) {
+            var st = cap(w.status);
+            html += "<tr>" +
+                "<td class='muted'>" + fmtDate(w.created_at) + "</td>" +
+                "<td>" + userLabel(w.profiles) + "</td>" +
+                "<td><b>" + money(w.amount) + "</b></td>" +
+                "<td class='muted'>" + esc(w.payment_method || "-") + "</td>" +
+                "<td class='muted'>" + esc(w.note || "-") + "</td>" +
+                "<td><span class='badge " + st + "'>" + st + "</span></td>" +
+                "<td>" + (w.status === "pending" ? actionButtons("withdrawal", w.id) : "<span class='small'>Reviewed</span>") + "</td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    function renderUsers(q) {
+
+        var byId = {};
+        cache.users.forEach(function (u) { byId[u.id] = u; });
+
+        var rows = cache.users.filter(function (u) { return matches(u, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = '<div class="empty">No users.</div>'; return; }
+
+        var html = "<table><thead><tr><th>NAME</th><th>EMAIL</th><th>PHONE</th><th>REFERRAL CODE</th><th>REFERRED BY</th><th>ROLE</th><th>LEVEL</th><th>VERIFIED</th><th>STATUS</th><th>JOINED</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (u) {
+            var ref = u.referred_by && byId[u.referred_by] ? byId[u.referred_by].email : "-";
+            var st  = u.suspended ? "Suspended" : "Active";
+            var act = "<div class='act'><button data-user-detail='" + esc(u.id) + "'>Details</button>";
+
+            if (u.role !== "admin") {
+                act += u.suspended
+                    ? "<button class='ok' data-suspend='" + esc(u.id) + "' data-to='false'>Unsuspend</button>"
+                    : "<button class='warn' data-suspend='" + esc(u.id) + "' data-to='true'>Suspend</button>";
+            }
+
+            html += "<tr>" +
+                "<td>" + esc(nameOf(u) === u.email ? "-" : nameOf(u)) + "</td>" +
+                "<td class='muted'>" + esc(u.email) + "</td>" +
+                "<td class='muted'>" + esc(u.phone || "-") + "</td>" +
+                "<td><b>" + esc(u.referral_code) + "</b></td>" +
+                "<td class='muted'>" + esc(ref) + "</td>" +
+                "<td class='muted'>" + esc(u.role) + "</td>" +
+                "<td>" + (cache.rd && cache.rd.tiers.length && cache.rd.stats[u.id] ? tierBadge(cache.rd.stats[u.id].tier) : "<span class='small'>-</span>") + "</td>" +
+                "<td>" + (u.role === "admin" ? "<span class='small'>-</span>" : kycBadge(u.kyc_status)) + "</td>" +
+                "<td><span class='badge " + st + "'>" + st + "</span></td>" +
+                "<td class='muted'>" + fmtDate(u.created_at) + "</td>" +
+                "<td>" + act + "</div></td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    function renderPlans() {
+
+        if (!cache.plans.length) { $("tableBox").innerHTML = '<div class="empty">No plans found.</div>'; return; }
+
+        var html = "<table><thead><tr><th>PLAN</th><th>MIN $</th><th>MAX $</th><th>DAYS</th><th>DAILY PROFIT %</th><th>REFERRAL %</th><th>ACTIVE</th><th></th></tr></thead><tbody>";
+
+        cache.plans.forEach(function (p) {
+            html += "<tr data-plan='" + esc(p.id) + "'>" +
+                "<td><b>" + esc(p.name) + "</b></td>" +
+                "<td><input class='cell-input' data-f='min'  type='number' step='0.01' value='" + Number(p.min_amount) + "'></td>" +
+                "<td><input class='cell-input' data-f='max'  type='number' step='0.01' value='" + Number(p.max_amount) + "'></td>" +
+                "<td><input class='cell-input' data-f='days' type='number' step='1'    value='" + Number(p.duration_days) + "'></td>" +
+                "<td><input class='cell-input' data-f='rate' type='number' step='0.001' value='" + Number(p.daily_rate) + "'></td>" +
+                "<td><input class='cell-input' data-f='ref'  type='number' step='0.001' value='" + Number(p.referral_rate) + "'></td>" +
+                "<td><input data-f='active' type='checkbox'" + (p.active ? " checked" : "") + "></td>" +
+                "<td><button class='btn' data-save-plan='" + esc(p.id) + "' style='padding:8px 16px;'>Save</button></td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>" +
+            "<p class='small' style='padding:14px 18px;'>Changes apply to NEW approvals only. Plans that already started keep their old rates.</p>";
+    }
+
+
+    /* ----- user details ----- */
+    async function showUserDetail(id) {
+
+        var u = cache.users.filter(function (x) { return x.id === id; })[0];
+        $("detailBox").innerHTML = '<div class="panel"><div class="empty">Loading...</div></div>';
+
+        var sb = ctx.sb;
+        var r = await Promise.all([
+            sb.rpc("admin_user_summary", { p_user: id }),
+            sb.from("investments").select("*, plans(name)").eq("user_id", id).order("start_date", { ascending: false }),
+            sb.from("deposits").select("*, plans(name)").eq("user_id", id).order("created_at", { ascending: false }),
+            sb.from("withdrawals").select("*").eq("user_id", id).order("created_at", { ascending: false })
+        ]);
+
+        var bad = r.filter(function (x) { return x.error; })[0];
+        if (bad) { $("detailBox").innerHTML = '<div class="panel"><div class="empty">Could not load: ' + esc(bad.error.message) + '</div></div>'; return; }
+
+        var s = r[0].data, inv = r[1].data, dep = r[2].data, wd = r[3].data;
+
+        var html = '<div class="panel"><div class="panel-head"><h3>' + esc(nameOf(u)) + ' <span class="small">' + esc(u ? u.email : "") + '</span></h3>' +
+            '<button class="btn btn-ghost" data-close-detail="1" style="padding:8px 16px;">Close</button></div>' +
+            '<div class="mini-stats">' +
+              '<div><small>Available balance</small><strong>' + money(s.available) + '</strong></div>' +
+              '<div><small>Active investment</small><strong>' + money(s.active) + '</strong></div>' +
+              '<div><small>Total profit</small><strong>' + money(s.profit) + '</strong></div>' +
+              '<div><small>Referral bonus</small><strong>' + money(s.referral) + '</strong></div>' +
+              '<div><small>Total deposited</small><strong>' + money(s.deposited) + '</strong></div>' +
+              '<div><small>Withdrawn</small><strong>' + money(s.withdrawn) + '</strong></div>' +
+              '<div><small>Pending withdrawal</small><strong>' + money(s.pending_wd) + '</strong></div>' +
+              '<div><small>Status</small><strong>' + (u && u.suspended ? "Suspended" : "Active") + '</strong></div>' +
+            '</div>';
+
+        if (cache.rd && cache.rd.stats[id]) {
+            var st2 = cache.rd.stats[id], up2 = u && u.referred_by && cache.rd.byId[u.referred_by] ? cache.rd.byId[u.referred_by] : null;
+            html += '<div class="mini-stats">' +
+              '<div><small>Level</small><strong>' + (cache.rd.tiers.length ? esc(st2.tier.name) : "-") + '</strong></div>' +
+              '<div><small>Verification</small><strong>' + (u && typeof u.kyc_status === "string" ? STATUS_LABEL[u.kyc_status] : "-") + '</strong></div>' +
+              '<div><small>People referred</small><strong>' + st2.referred.length + '</strong></div>' +
+              '<div><small>Commission earned</small><strong>' + money(st2.commission) + '</strong></div></div>' +
+              '<p class="small" style="font-size:13px;">Phone: <b>' + esc(u ? (u.phone || "-") : "-") + '</b> &middot; Referral code: <b>' + esc(u ? u.referral_code : "-") + '</b> &middot; Referred by: <b>' +
+              (up2 ? esc(nameOf(up2)) + " (" + esc(up2.email) + ")" : "nobody") + '</b>' +
+              (u && latestKyc(id) ? ' &middot; <a href="#" style="color:var(--gold);" data-open-kyc-tab="' + esc(id) + '">Open verification</a>' : '') + '</p>';
+        }
+
+        html += '<div class="sub-h">INVESTMENTS</div>';
+        if (!inv.length) html += '<div class="empty">No investments.</div>';
+        else {
+            html += '<div class="table-box"><table><thead><tr><th>STARTED</th><th>PLAN</th><th>AMOUNT</th><th>DAILY %</th><th>DAYS</th><th>STATUS</th></tr></thead><tbody>';
+            inv.forEach(function (i) {
+                var st = i.status === "completed" ? "Completed" : "Running";
+                html += '<tr><td class="muted">' + fmtDate(i.start_date) + '</td><td>' + esc(i.plans ? i.plans.name : i.plan_id) + '</td><td><b>' + money(i.amount) +
+                        '</b></td><td class="muted">' + Number(i.daily_rate) + '%</td><td class="muted">' + i.duration_days + '</td><td><span class="badge ' + st + '">' + st + '</span></td></tr>';
+            });
+            html += '</tbody></table></div>';
+        }
+
+        html += '<div class="sub-h">DEPOSITS</div>';
+        if (!dep.length) html += '<div class="empty">No deposits.</div>';
+        else {
+            html += '<div class="table-box"><table><thead><tr><th>DATE</th><th>PLAN</th><th>AMOUNT</th><th>METHOD</th><th>STATUS</th></tr></thead><tbody>';
+            dep.forEach(function (d) {
+                var st = cap(d.status);
+                html += '<tr><td class="muted">' + fmtDate(d.created_at) + '</td><td>' + esc(d.plans ? d.plans.name : d.plan_id) + '</td><td><b>' + money(d.amount) +
+                        '</b></td><td class="muted">' + esc(d.payment_method || "-") + '</td><td><span class="badge ' + st + '">' + st + '</span></td></tr>';
+            });
+            html += '</tbody></table></div>';
+        }
+
+        html += '<div class="sub-h">WITHDRAWALS</div>';
+        if (!wd.length) html += '<div class="empty">No withdrawals.</div>';
+        else {
+            html += '<div class="table-box"><table><thead><tr><th>DATE</th><th>AMOUNT</th><th>METHOD</th><th>STATUS</th></tr></thead><tbody>';
+            wd.forEach(function (w) {
+                var st = cap(w.status);
+                html += '<tr><td class="muted">' + fmtDate(w.created_at) + '</td><td><b>' + money(w.amount) + '</b></td><td class="muted">' +
+                        esc(w.payment_method || "-") + '</td><td><span class="badge ' + st + '">' + st + '</span></td></tr>';
+            });
+            html += '</tbody></table></div>';
+        }
+
+        $("detailBox").innerHTML = html + '</div>';
+        $("detailBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+
+    /* ----- LIVE chat: instant messages, sound, typing, online status ----- */
+    var msgCh = null, presenceCh = null, typingCh = null, typingName = "", typingHide = null, lastTypingSent = 0;
+    var titleBase = document.title, newCount = 0;
+
+    function beep() {
+        try {
+            var C = window.AudioContext || window.webkitAudioContext;
+            if (!C) return;
+            var ac = new C(), o = ac.createOscillator(), g = ac.createGain();
+            o.type = "sine"; o.frequency.value = 880; g.gain.value = 0.07;
+            o.connect(g); g.connect(ac.destination); o.start();
+            setTimeout(function () { try { o.stop(); ac.close(); } catch (e) {} }, 200);
+        } catch (e) {}
+    }
+
+    function stopAdminRealtime() {
+        [msgCh, presenceCh, typingCh].forEach(function (c) { try { if (c) ctx.sb.removeChannel(c); } catch (e) {} });
+        msgCh = presenceCh = typingCh = null; typingName = "";
+    }
+
+    function startAdminRealtime() {
+
+        try {
+
+            stopAdminRealtime();
+
+            // every new user message reaches the admin instantly
+            msgCh = ctx.sb.channel("admin-support")
+                .on("postgres_changes", { event: "INSERT", schema: "public", table: "support_messages" },
+                    function (p) { onNewSupportMsg(p && p.new); })
+                .subscribe();
+
+            // users see "Support team is online" while an admin has this panel open
+            presenceCh = ctx.sb.channel("support-presence", { config: { presence: { key: "admin-" + ctx.session.user.id } } });
+            presenceCh.subscribe(function (status) {
+                if (status === "SUBSCRIBED") presenceCh.track({ admin: true, at: Date.now() });
+            });
+
+        } catch (e) {}
+    }
+
+    async function onNewSupportMsg(m) {
+
+        if (!m || m.sender !== "user") return;
+
+        beep();
+
+        if (document.hidden) {
+            newCount++;
+            document.title = "(" + newCount + ") New message - " + titleBase;
+        }
+
+        toast("New message from a user.", true);
+
+        await loadThreads();
+        if (currentTab === "support") renderSupport();
+        if (currentTab === "support" && openUser === m.user_id) await loadThread(openUser, true);
+    }
+
+    document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) { newCount = 0; document.title = titleBase; }
+    });
+
+    function joinTyping(userId) {
+
+        if (typingName === "chat:" + userId && typingCh) return;
+
+        try { if (typingCh) ctx.sb.removeChannel(typingCh); } catch (e) {}
+
+        typingName = "chat:" + userId;
+
+        typingCh = ctx.sb.channel(typingName)
+            .on("broadcast", { event: "typing" }, function (p) {
+                if (!p || !p.payload || p.payload.from !== "user") return;
+                var note = $("typingNote");
+                if (!note) return;
+                note.textContent = "User is typing...";
+                clearTimeout(typingHide);
+                typingHide = setTimeout(function () { var n = $("typingNote"); if (n) n.textContent = ""; }, 3500);
+            })
+            .subscribe();
+    }
+
+    $("detailBox").addEventListener("input", function (e) {
+        if (!e.target.closest("#replyForm") || !typingCh || Date.now() - lastTypingSent < 2500) return;
+        lastTypingSent = Date.now();
+        try { typingCh.send({ type: "broadcast", event: "typing", payload: { from: "admin" } }); } catch (x) {}
+    });
+
+
+    /* ----- support ----- */
+    function renderSupport(q) {
+
+        q = q == null ? $("searchBox").value.trim().toLowerCase() : q;
+
+        var rows = cache.threads.filter(function (t) { return matches(t, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = '<div class="empty">No support messages yet.</div>'; return; }
+
+        var html = "<table style='min-width:760px'><thead><tr><th>USER</th><th>LAST MESSAGE</th><th>WHEN</th><th>NEW</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (t) {
+            html += "<tr>" +
+                "<td>" + esc(t.t_name || t.t_email) + "<div class='small'>" + esc(t.t_email) + "</div></td>" +
+                "<td class='muted'>" + (t.t_sender === "admin" ? "<span class='small'>You: </span>" : "") + esc(cut(t.t_last, 90)) + "</td>" +
+                "<td class='muted'>" + fmtTime(t.t_at) + "</td>" +
+                "<td>" + (Number(t.t_unread) > 0 ? "<span class='unread-dot'>" + Number(t.t_unread) + "</span>" : "<span class='small'>-</span>") + "</td>" +
+                "<td><div class='act'><button class='ok' data-open-thread='" + esc(t.t_user_id) + "'>Open</button></div></td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    async function loadThread(userId, silent) {
+
+        var r = await ctx.sb.from("support_messages").select("*").eq("user_id", userId).order("id", { ascending: true });
+
+        if (r.error) { if (!silent) toast(r.error.message, false); return; }
+
+        openUser = userId;
+
+        var t = cache.threads.filter(function (x) { return x.t_user_id === userId; })[0];
+        var u = cache.users.filter(function (x) { return x.id === userId; })[0];
+        var who = t ? (t.t_name || t.t_email) : nameOf(u);
+        var mail = t ? t.t_email : (u ? u.email : "");
+
+        var box = $("detailBox");
+        var keep = box.querySelector("textarea") ? box.querySelector("textarea").value : "";
+        var wasBottom = true;
+        var old = box.querySelector(".thread");
+        if (old) wasBottom = old.scrollHeight - old.scrollTop - old.clientHeight < 60;
+
+        var html = '<div class="panel"><div class="panel-head"><h3>' + esc(who) + ' <span class="small">' + esc(mail) + '</span></h3>' +
+            '<button class="btn btn-ghost" data-close-detail="1" style="padding:8px 16px;">Close</button></div><div class="thread">';
+
+        r.data.forEach(function (m) {
+            var mine = m.sender === "admin";
+            html += '<div class="bwrap ' + (mine ? "admin" : "user") + '"><div class="bubble ' + (mine ? "admin" : "user") + '">' + esc(m.body) +
+                    '</div><div class="bmeta">' + (mine ? "Support team" : esc(who)) + ' · ' + fmtTime(m.created_at) + '</div></div>';
+        });
+
+        html += '</div><div class="small" id="typingNote" style="min-height:18px;margin-top:8px;"></div><form class="reply-box" id="replyForm"><textarea rows="2" maxlength="1000" placeholder="Write a reply or the solution..."></textarea>' +
+                '<button type="submit" class="btn" id="replyBtn">Send reply</button></form></div>';
+
+        box.innerHTML = html;
+        box.querySelector("textarea").value = keep;
+
+        var th = box.querySelector(".thread");
+        if (wasBottom) th.scrollTop = th.scrollHeight;
+
+        joinTyping(userId);
+
+        if (!silent) box.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        var hasNew = r.data.some(function (m) { return m.sender === "user" && !m.read_by_admin; });
+        if (hasNew) {
+            await ctx.sb.rpc("admin_mark_support_read", { p_user: userId });
+            await loadThreads();
+            if (currentTab === "support") renderSupport();
+        }
+    }
+
+
+    /* ----- activity log ----- */
+    var ACTION_LABELS = {
+        deposit_approved: "Deposit approved", deposit_rejected: "Deposit rejected",
+        withdrawal_approved: "Withdrawal approved", withdrawal_rejected: "Withdrawal rejected",
+        plan_updated: "Plan updated", settings_min_withdraw: "Minimum withdrawal changed",
+        settings_return_principal: "Return-principal setting changed",
+        kyc_approved: "Verification approved", kyc_rejected: "Verification rejected", kyc_viewed: "Identity documents opened",
+        tier_updated: "Level rules changed", settings_require_kyc: "Verified-only withdrawals setting changed",
+        user_suspended: "User suspended", user_unsuspended: "User unsuspended", support_reply: "Support reply sent",
+        content_updated: "Website text edited", banner_created: "Banner created", banner_updated: "Banner updated", banner_deleted: "Banner deleted"
+    };
+
+    function renderActivity(q) {
+
+        var byId = {};
+        cache.users.forEach(function (u) { byId[u.id] = u; });
+
+        var rows = cache.audit.filter(function (a) { return matches(a, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = '<div class="empty">No activity recorded yet.</div>'; return; }
+
+        var html = "<table style='min-width:860px'><thead><tr><th>WHEN</th><th>ADMIN</th><th>ACTION</th><th>TARGET</th><th>DETAILS</th></tr></thead><tbody>";
+
+        rows.forEach(function (a) {
+            var d = a.details || {};
+            var who = d.user_id && byId[d.user_id] ? " &middot; " + esc(byId[d.user_id].email) : (d.email ? " &middot; " + esc(d.email) : "");
+            html += "<tr>" +
+                "<td class='muted'>" + fmtTime(a.created_at) + "</td>" +
+                "<td class='muted'>" + esc(a.admin_id && byId[a.admin_id] ? byId[a.admin_id].email : "-") + "</td>" +
+                "<td><b>" + esc(ACTION_LABELS[a.action] || a.action) + "</b></td>" +
+                "<td class='muted'>" + esc(a.target_table || "-") + who + "</td>" +
+                "<td class='code'>" + esc(cut(JSON.stringify(a.details || {}), 120)) + "</td>" +
+                "</tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+
+
+    /* ----- website content editor ----- */
+    var PAGE_OF = { "Home page": "index.html", "How it works (home page)": "index.html#how-it-works", "About page": "about.html",
+                    "Plans page": "plans.html", "Referral page": "referral.html", "FAQ page": "faq.html",
+                    "Contact page": "contact.html", "Privacy Policy page": "privacy.html", "Footer (all pages)": "index.html" };
+
+    function fieldHtml(f) {
+        var val = cache.content[f.key] != null ? cache.content[f.key] : f.def;
+        var input = f.type === "textarea"
+            ? '<textarea data-ckey="' + esc(f.key) + '" data-def="' + esc(f.def) + '" maxlength="2000" rows="3">' + esc(val) + '</textarea>'
+            : '<input type="text" data-ckey="' + esc(f.key) + '" data-def="' + esc(f.def) + '" maxlength="2000" value="' + esc(val) + '">';
+        return '<div class="cms-field"><label>' + esc(f.label) + '</label>' + input + '</div>';
+    }
+
+    function faqRowHtml(q, a) {
+        return '<div class="faq-row"><div class="cms-field"><label>Question</label><input type="text" class="faq-q" maxlength="200" value="' + esc(q) + '"></div>' +
+               '<div class="cms-field"><label>Answer</label><textarea class="faq-a" maxlength="1500" rows="3">' + esc(a) + '</textarea></div>' +
+               '<button type="button" class="btn btn-ghost" data-faq-remove="1" style="padding:6px 14px;font-size:12px;">Remove</button></div>';
+    }
+
+    function renderContentTab() {
+
+        var cfg = window.INV_CMS;
+        if (!cfg) { $("tableBox").innerHTML = '<div class="empty">Content settings did not load. Refresh the page.</div>'; return; }
+
+        var html = '<div style="padding:18px 20px;"><p class="small" style="font-size:13px;">Change the text of your website here. Leave nothing to code. ' +
+                   'Changes appear on the site within about 30 seconds. An empty box brings back the original text.</p>';
+
+        cfg.groups.forEach(function (g, gi) {
+
+            var grid = g.fields.length > 6 ? ' cms-grid' : '';
+            html += '<div class="panel" data-group="' + gi + '"><div class="panel-head"><h3>' + esc(g.title) + '</h3>' +
+                    '<a class="small" style="color:var(--gold);" target="_blank" href="' + esc(PAGE_OF[g.title] || "index.html") + '">Open page &rarr;</a></div>' +
+                    '<div class="' + grid.trim() + '">' + g.fields.map(fieldHtml).join("") + '</div>' +
+                    '<div class="cms-actions"><button class="btn" data-save-group="' + gi + '" style="padding:9px 18px;">Save this section</button>' +
+                    '<button class="btn btn-ghost" data-reset-group="' + gi + '" style="padding:9px 18px;">Reset to original</button></div></div>';
+        });
+
+        // FAQ list
+        var faq = cfg.faq;
+        if (cache.content.faq_items) { try { var p = JSON.parse(cache.content.faq_items); if (Array.isArray(p)) faq = p; } catch (e) {} }
+
+        html += '<div class="panel" id="faqPanel"><div class="panel-head"><h3>FAQ questions</h3>' +
+                '<a class="small" style="color:var(--gold);" target="_blank" href="faq.html">Open page &rarr;</a></div><div id="faqRows">' +
+                faq.map(function (i) { return faqRowHtml(i.q, i.a); }).join("") + '</div>' +
+                '<div class="cms-actions"><button class="btn btn-ghost" data-faq-add="1" style="padding:9px 18px;">+ Add question</button>' +
+                '<button class="btn" data-faq-save="1" style="padding:9px 18px;">Save FAQ</button>' +
+                '<button class="btn btn-ghost" data-faq-reset="1" style="padding:9px 18px;">Reset to original</button></div></div>';
+
+        $("tableBox").innerHTML = html + '</div>';
+    }
+
+    // saves only what you changed and keeps everything else on screen untouched
+    async function saveContent(items, okText) {
+        var r = await ctx.sb.rpc("admin_set_content", { p_items: items });
+        if (r.error) { toast(r.error.message, false); return false; }
+        try { sessionStorage.removeItem("inv_cms"); } catch (e) {}
+        Object.keys(items).forEach(function (k) {
+            if (items[k] === "") delete cache.content[k]; else cache.content[k] = items[k];
+        });
+        toast(okText, true);
+        return true;
+    }
+
+    /* ----- banners ----- */
+    function bannerStatus(b) {
+        var n = new Date().toISOString();
+        if (!b.active) return "Off";
+        if (b.starts_at && b.starts_at > n) return "Scheduled";
+        if (b.ends_at && b.ends_at < n) return "Expired";
+        return "Live";
+    }
+
+    function toLocalInput(iso) {
+        if (!iso) return "";
+        var d = new Date(iso);
+        if (isNaN(d)) return "";
+        var p = function (n) { return (n < 10 ? "0" : "") + n; };
+        return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + "T" + p(d.getHours()) + ":" + p(d.getMinutes());
+    }
+
+    function renderBanners(q) {
+
+        var rows = cache.banners.filter(function (b) { return matches(b, q); });
+
+        var html = '<div style="padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+                   '<span class="small" style="font-size:13px;">Banners appear on top of every page (Top bar) or as a card on the home page (Home card).</span>' +
+                   '<button class="btn" data-banner-new="1" style="padding:9px 18px;">+ New banner</button></div>';
+
+        if (!rows.length) { $("tableBox").innerHTML = html + '<div class="empty">No banners yet.</div>'; return; }
+
+        html += "<table style='min-width:860px'><thead><tr><th>MESSAGE</th><th>WHERE</th><th>STYLE</th><th>SCHEDULE</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (b) {
+            var st = bannerStatus(b);
+            var sched = (b.starts_at ? fmtTime(b.starts_at) : "now") + " &rarr; " + (b.ends_at ? fmtTime(b.ends_at) : "no end");
+            html += "<tr><td>" + esc(cut(b.message, 80)) + "</td>" +
+                "<td class='muted'>" + (b.placement === "home" ? "Home card" : "Top bar") + "</td>" +
+                "<td class='muted'>" + esc(cap(b.style)) + "</td>" +
+                "<td class='muted'>" + sched + "</td>" +
+                "<td><span class='badge " + st + "'>" + st + "</span></td>" +
+                "<td><div class='act'><button data-banner-edit='" + b.id + "'>Edit</button>" +
+                "<button class='warn' data-banner-toggle='" + b.id + "'>" + (b.active ? "Turn off" : "Turn on") + "</button>" +
+                "<button class='no' data-banner-del='" + b.id + "'>Delete</button></div></td></tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    function openBannerForm(b) {
+
+        b = b || { id: null, message: "", link_text: "", link_url: "", style: "promo", placement: "top", image_url: "", starts_at: null, ends_at: null, active: true, sort_order: 0 };
+
+        var opt = function (v, label, cur) { return '<option value="' + v + '"' + (cur === v ? " selected" : "") + '>' + label + '</option>'; };
+
+        $("detailBox").innerHTML = '<div class="panel"><div class="panel-head"><h3>' + (b.id ? "Edit banner" : "New banner") + '</h3>' +
+            '<button class="btn btn-ghost" data-close-detail="1" style="padding:8px 16px;">Close</button></div>' +
+            '<form id="bannerForm" novalidate data-id="' + (b.id == null ? "" : b.id) + '">' +
+            '<div class="cms-field"><label>Message (max 300 characters)</label><textarea id="bMsg" maxlength="300" rows="3">' + esc(b.message) + '</textarea></div>' +
+            '<div class="cms-grid">' +
+              '<div class="cms-field"><label>Button / link text (optional)</label><input type="text" id="bLinkText" maxlength="40" value="' + esc(b.link_text || "") + '"></div>' +
+              '<div class="cms-field"><label>Link address (optional)</label><input type="text" id="bLinkUrl" maxlength="300" placeholder="plans.html or https://..." value="' + esc(b.link_url || "") + '"></div>' +
+              '<div class="cms-field"><label>Where to show</label><select id="bPlace">' + opt("top", "Top bar (every page)", b.placement) + opt("home", "Home page card", b.placement) + '</select></div>' +
+              '<div class="cms-field"><label>Colour style</label><select id="bStyle">' + opt("promo", "Lime (highlight)", b.style) + opt("info", "Blue (information)", b.style) + opt("success", "Green (good news)", b.style) + opt("warning", "Amber (notice)", b.style) + '</select></div>' +
+              '<div class="cms-field"><label>Image link (Home card only, optional)</label><input type="text" id="bImg" maxlength="500" placeholder="https://..." value="' + esc(b.image_url || "") + '"><div class="hint">Paste a link that starts with https://</div></div>' +
+              '<div class="cms-field"><label>Order (smaller number shows first)</label><input type="number" id="bSort" value="' + Number(b.sort_order || 0) + '"></div>' +
+              '<div class="cms-field"><label>Start (optional)</label><input type="datetime-local" id="bStart" value="' + toLocalInput(b.starts_at) + '"></div>' +
+              '<div class="cms-field"><label>End (optional)</label><input type="datetime-local" id="bEnd" value="' + toLocalInput(b.ends_at) + '"></div>' +
+            '</div>' +
+            '<label class="chk" style="margin:6px 0 14px;"><input type="checkbox" id="bActive"' + (b.active ? " checked" : "") + '> Show this banner on the site</label>' +
+            '<div class="cms-actions"><button type="submit" class="btn" id="bSave">Save banner</button></div></form></div>';
+
+        $("detailBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function saveBannerRow(b, over) {
+        var r = await ctx.sb.rpc("admin_save_banner", {
+            p_id: b.id, p_message: b.message, p_link_text: b.link_text, p_link_url: b.link_url, p_style: b.style,
+            p_placement: b.placement, p_image_url: b.image_url, p_starts: b.starts_at, p_ends: b.ends_at,
+            p_active: over && over.active != null ? over.active : b.active, p_sort: b.sort_order
+        });
+        return r;
+    }
+
+
+
+    /* ===== REFERRALS, LEVELS AND VERIFICATION ===== */
+    var STATUS_LABEL = { none: "Not verified", pending: "Pending", approved: "Verified", rejected: "Rejected" };
+    var STATUS_BADGE = { none: "Unverified", pending: "Pending", approved: "Verified", rejected: "Rejected" };
+
+    function kycBadge(st) {
+        if (typeof st !== "string") return "<span class='small'>-</span>";
+        return "<span class='badge " + STATUS_BADGE[st] + "'>" + STATUS_LABEL[st] + "</span>";
+    }
+
+    function tierBadge(t) {
+        return "<span class='tier-badge " + esc(String(t.name).toLowerCase()) + "'>" + esc(t.name) + "</span>";
+    }
+
+    function ageOf(dob) {
+        var d = new Date(dob + "T00:00:00"), n = new Date();
+        if (isNaN(d)) return "";
+        var a = n.getFullYear() - d.getFullYear();
+        if (n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--;
+        return a;
+    }
+
+    function maskDoc(n) {
+        n = String(n || "");
+        return n.length > 4 ? n.slice(0, 2) + "****" + n.slice(-2) : "****";
+    }
+
+    // loads everyone's money and referral facts once and works out each person's level
+    async function loadRefData() {
+
+        var sb = ctx.sb;
+        var r = await Promise.all([
+            sb.from("profiles").select("*"),
+            sb.from("deposits").select("id, user_id, plan_id, amount, status, created_at, plans(name)"),
+            sb.from("referral_earnings").select("*"),
+            sb.from("tiers").select("*").order("id")
+        ]);
+
+        if (r[0].error) { toast("Could not load users: " + r[0].error.message, false); return null; }
+
+        var rd = { profiles: r[0].data || [], deposits: r[1].data || [], earnings: r[2].data || [], tiers: r[3].error ? [] : (r[3].data || []), byId: {}, stats: {} };
+
+        rd.profiles.forEach(function (p) {
+            rd.byId[p.id] = p;
+            rd.stats[p.id] = { own: 0, referred: [], referredInvestors: 0, referredInvested: 0, commission: 0 };
+        });
+
+        rd.deposits.forEach(function (d) { if (d.status === "approved" && rd.stats[d.user_id]) rd.stats[d.user_id].own += Number(d.amount); });
+        rd.profiles.forEach(function (p) { if (p.referred_by && rd.stats[p.referred_by]) rd.stats[p.referred_by].referred.push(p.id); });
+
+        Object.keys(rd.stats).forEach(function (id) {
+            var s = rd.stats[id];
+            s.referred.forEach(function (rid) {
+                var inv = rd.stats[rid] ? rd.stats[rid].own : 0;
+                if (inv > 0) { s.referredInvestors++; s.referredInvested += inv; }
+            });
+        });
+
+        rd.earnings.forEach(function (e) { if (rd.stats[e.referrer_id]) rd.stats[e.referrer_id].commission += Number(e.amount); });
+
+        Object.keys(rd.stats).forEach(function (id) {
+            var s = rd.stats[id], t = INVTier.compute(rd.tiers, s.own, s.referredInvestors);
+            s.tier = t.tier; s.next = t.next;
+        });
+
+        cache.rd = rd;
+        return rd;
+    }
+
+    async function loadKycBadge() {
+        var r = await ctx.sb.from("kyc_submissions").select("id").eq("status", "pending");
+        var n = (!r.error && r.data) ? r.data.length : 0;
+        $("kycBadge").textContent = n > 99 ? "99+" : n;
+        $("kycBadge").hidden = n < 1;
+    }
+
+    /* ----- referrals tab ----- */
+    function renderReferrals(q) {
+
+        var rd = cache.rd;
+        if (!rd) { $("tableBox").innerHTML = '<div class="empty">Could not load referral data.</div>'; return; }
+
+        var list = rd.profiles.filter(function (p) {
+            var s = rd.stats[p.id];
+            return (refFilter === "all" || s.referred.length > 0) && matches(p, q);
+        }).sort(function (a, b) {
+            var x = rd.stats[a.id], y = rd.stats[b.id];
+            return (y.referred.length - x.referred.length) || (y.referredInvested - x.referredInvested);
+        });
+
+        var html = '<div class="chips"><button class="chip' + (refFilter === "referrers" ? " active" : "") + '" data-ref-filter="referrers">Only people who referred</button>' +
+                   '<button class="chip' + (refFilter === "all" ? " active" : "") + '" data-ref-filter="all">All users</button></div>';
+
+        if (!list.length) {
+            html += '<div class="empty">No referrals yet.</div>';
+        } else {
+            html += "<table style='min-width:980px'><thead><tr><th>USER</th><th>LEVEL</th><th>REFERRED</th><th>INVESTED</th><th>REFERRED INVESTMENT</th><th>COMMISSION EARNED</th><th>OWN INVESTMENT</th><th>ACTION</th></tr></thead><tbody>";
+            list.forEach(function (p) {
+                var s = rd.stats[p.id];
+                html += "<tr><td>" + userLabel(p) + "</td>" +
+                    "<td>" + (rd.tiers.length ? tierBadge(s.tier) : "<span class='small'>-</span>") + "</td>" +
+                    "<td><b>" + s.referred.length + "</b></td>" +
+                    "<td class='muted'>" + s.referredInvestors + " of " + s.referred.length + "</td>" +
+                    "<td>" + money(s.referredInvested) + "</td>" +
+                    "<td><b>" + money(s.commission) + "</b></td>" +
+                    "<td class='muted'>" + money(s.own) + "</td>" +
+                    "<td><div class='act'><button data-ref-detail='" + esc(p.id) + "'>Details</button></div></td></tr>";
+            });
+            html += "</tbody></table>";
+        }
+
+        // level rules
+        if (rd.tiers.length) {
+            html += '<div class="panel" style="margin:18px"><div class="panel-head"><h3>Level rules</h3></div>' +
+                '<p class="small" style="margin-bottom:12px;font-size:13px;">A user gets the highest level where EITHER their own approved investment OR the number of referred people who invested reaches the number below.</p>' +
+                '<table style="min-width:560px"><thead><tr><th>LEVEL</th><th>OWN INVESTMENT ($)</th><th>REFERRED PEOPLE WHO INVEST</th><th></th></tr></thead><tbody>';
+            rd.tiers.forEach(function (t) {
+                var first = t.id === 1;
+                html += "<tr data-tier='" + t.id + "'><td>" + tierBadge(t) + "</td>" +
+                    "<td><input class='cell-input' data-tf='inv' type='number' step='1' min='1' value='" + Number(t.min_invested) + "'" + (first ? " disabled" : "") + "></td>" +
+                    "<td><input class='cell-input' data-tf='ref' type='number' step='1' min='1' value='" + Number(t.min_referrals) + "'" + (first ? " disabled" : "") + "></td>" +
+                    "<td>" + (first ? "<span class='small'>Everyone starts here</span>" : "<button class='btn' data-save-tier='" + t.id + "' style='padding:7px 14px;'>Save</button>") + "</td></tr>";
+            });
+            html += "</tbody></table></div>";
+        } else {
+            html += '<div class="empty">Level rules are not installed yet (run the update 5 SQL).</div>';
+        }
+
+        $("tableBox").innerHTML = html;
+    }
+
+    function showReferralDetail(id) {
+
+        var rd = cache.rd, p = rd.byId[id], s = rd.stats[id];
+        if (!p) return;
+
+        var up = p.referred_by && rd.byId[p.referred_by] ? rd.byId[p.referred_by] : null;
+
+        var html = '<div class="panel"><div class="panel-head"><h3>' + esc(nameOf(p)) + ' <span class="small">' + esc(p.email) + '</span></h3>' +
+            '<button class="btn btn-ghost" data-close-detail="1" style="padding:8px 16px;">Close</button></div>' +
+            '<div class="mini-stats">' +
+              '<div><small>Level</small><strong>' + (rd.tiers.length ? esc(s.tier.name) : "-") + '</strong></div>' +
+              '<div><small>People referred</small><strong>' + s.referred.length + '</strong></div>' +
+              '<div><small>Of them invested</small><strong>' + s.referredInvestors + '</strong></div>' +
+              '<div><small>Commission earned</small><strong>' + money(s.commission) + '</strong></div>' +
+            '</div>' +
+            '<p class="small" style="font-size:13px;margin-bottom:6px;">Referral code: <b>' + esc(p.referral_code) + '</b> &middot; Joined with the code of: <b>' + (up ? esc(nameOf(up)) + " (" + esc(up.email) + ")" : "nobody") + '</b>' +
+            (rd.tiers.length && s.next ? ' &middot; Next level: <b>' + esc(s.next.name) + '</b> at ' + money(s.next.min_invested) + ' invested or ' + Number(s.next.min_referrals) + ' referred investors' : '') + '</p>';
+
+        html += '<div class="sub-h">PEOPLE THIS USER REFERRED</div>';
+
+        if (!s.referred.length) {
+            html += '<div class="empty">Nobody yet.</div>';
+        } else {
+            html += '<div class="table-box"><table><thead><tr><th>USER</th><th>JOINED</th><th>APPROVED DEPOSITS</th><th>PENDING</th><th>COMMISSION FOR THIS USER</th><th>STATUS</th></tr></thead><tbody>';
+            s.referred.forEach(function (rid) {
+                var u = rd.byId[rid];
+                var approved = 0, pending = 0;
+                rd.deposits.forEach(function (d) {
+                    if (d.user_id !== rid) return;
+                    if (d.status === "approved") approved += Number(d.amount);
+                    if (d.status === "pending") pending += Number(d.amount);
+                });
+                var com = rd.earnings.filter(function (e) { return e.referrer_id === id && e.referred_id === rid; })
+                                     .reduce(function (n, e) { return n + Number(e.amount); }, 0);
+                html += '<tr><td>' + userLabel(u) + '</td><td class="muted">' + fmtDate(u.created_at) + '</td><td><b>' + money(approved) + '</b></td><td class="muted">' + money(pending) +
+                        '</td><td><b>' + money(com) + '</b></td><td><span class="badge ' + (approved > 0 ? "Approved" : "Pending") + '">' + (approved > 0 ? "Invested" : "Not invested yet") + '</span></td></tr>';
+            });
+            html += '</tbody></table></div>';
+        }
+
+        $("detailBox").innerHTML = html + '</div>';
+        $("detailBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    /* ----- verification tab ----- */
+    function latestKyc(userId) {
+        return cache.kyc.filter(function (k) { return k.user_id === userId; })[0] || null;      // newest first
+    }
+
+    function renderVerification(q) {
+
+        var rd = cache.rd;
+        if (!rd) { $("tableBox").innerHTML = '<div class="empty">Could not load users.</div>'; return; }
+
+        if (rd.profiles.length && typeof rd.profiles[0].kyc_status !== "string") {
+            $("tableBox").innerHTML = '<div class="empty">Verification is not installed yet. Run the update 5 SQL in Supabase.</div>';
+            return;
+        }
+
+        var people = rd.profiles.filter(function (p) { return p.role !== "admin"; });
+        var counts = { all: people.length, approved: 0, pending: 0, rejected: 0, none: 0 };
+        people.forEach(function (p) { counts[p.kyc_status] = (counts[p.kyc_status] || 0) + 1; });
+
+        var chips = [["pending", "Pending"], ["approved", "Verified"], ["rejected", "Rejected"], ["none", "Not verified"], ["all", "All"]];
+        var html = '<div class="chips">' + chips.map(function (c) {
+            return '<button class="chip' + (kycFilter === c[0] ? " active" : "") + '" data-kyc-filter="' + c[0] + '">' + c[1] + ' (' + (counts[c[0]] || 0) + ')</button>';
+        }).join("") + '</div>';
+
+        var rows = people.filter(function (p) { return (kycFilter === "all" || p.kyc_status === kycFilter) && matches(p, q); });
+
+        if (!rows.length) { $("tableBox").innerHTML = html + '<div class="empty">Nobody in this list.</div>'; return; }
+
+        html += "<table style='min-width:900px'><thead><tr><th>USER</th><th>PHONE</th><th>STATUS</th><th>DOCUMENT</th><th>SENT</th><th>ACTION</th></tr></thead><tbody>";
+
+        rows.forEach(function (p) {
+            var k = latestKyc(p.id);
+            html += "<tr><td>" + userLabel(p) + "</td>" +
+                "<td class='muted'>" + esc(p.phone || "-") + "</td>" +
+                "<td>" + kycBadge(p.kyc_status) + "</td>" +
+                "<td class='muted'>" + (k ? esc(k.doc_type === "nid" ? "NID" : "Passport") + " · " + esc(maskDoc(k.doc_number)) : "-") + "</td>" +
+                "<td class='muted'>" + (k ? fmtTime(k.submitted_at) : "-") + "</td>" +
+                "<td><div class='act'>" + (k ? "<button class='ok' data-kyc-open='" + esc(p.id) + "'>" + (p.kyc_status === "pending" ? "Review" : "View") + "</button>" : "<span class='small'>No documents</span>") + "</div></td></tr>";
+        });
+
+        $("tableBox").innerHTML = html + "</tbody></table>";
+    }
+
+    async function openKycReview(userId) {
+
+        var rd = cache.rd, p = rd.byId[userId], k = latestKyc(userId);
+        if (!p || !k) return;
+
+        $("detailBox").innerHTML = '<div class="panel"><div class="empty">Loading documents...</div></div>';
+
+        var sb = ctx.sb;
+        var res = await Promise.all([
+            sb.rpc("admin_user_summary", { p_user: userId }),
+            sb.storage.from("kyc").createSignedUrl(k.doc_front_path, 300),
+            k.doc_back_path ? sb.storage.from("kyc").createSignedUrl(k.doc_back_path, 300) : Promise.resolve(null),
+            sb.storage.from("kyc").createSignedUrl(k.selfie_path, 300)
+        ]);
+
+        sb.rpc("admin_log_kyc_view", { p_id: k.id });          // every viewing is written to the activity log
+
+        var sum = res[0].data || {}, s = rd.stats[userId];
+        var up = p.referred_by && rd.byId[p.referred_by] ? rd.byId[p.referred_by] : null;
+        var url = function (r) { return r && r.data ? r.data.signedUrl : ""; };
+
+        var img = function (u, label, wide) {
+            return u ? '<div class="kyc-img' + (wide ? " wide" : "") + '" data-zoom="' + esc(u) + '"><img src="' + esc(u) + '" alt="' + esc(label) + '"><span>' + esc(label) + ' (click to enlarge)</span></div>'
+                     : '<div class="kyc-img' + (wide ? " wide" : "") + '"><span>' + esc(label) + ': could not load</span></div>';
+        };
+
+        var sameName = String(k.full_name).trim().toLowerCase() === nameOf(p).trim().toLowerCase();
+        var history = cache.kyc.filter(function (x) { return x.user_id === userId; });
+
+        var html = '<div class="panel"><div class="panel-head"><h3>Verification: ' + esc(nameOf(p)) + ' ' + kycBadge(p.kyc_status) + '</h3>' +
+            '<button class="btn btn-ghost" data-close-detail="1" style="padding:8px 16px;">Close</button></div>' +
+            '<div class="kyc-grid"><div>' +
+              '<div class="sub-h" style="margin-top:0">ACCOUNT INFORMATION</div><dl class="kv">' +
+                '<dt>Name (registered)</dt><dd>' + esc(nameOf(p)) + '</dd>' +
+                '<dt>Email</dt><dd>' + esc(p.email) + '</dd>' +
+                '<dt>Phone</dt><dd>' + esc(p.phone || "-") + '</dd>' +
+                '<dt>Joined</dt><dd>' + fmtDate(p.created_at) + '</dd>' +
+                '<dt>Referral code</dt><dd>' + esc(p.referral_code) + '</dd>' +
+                '<dt>Referred by</dt><dd>' + (up ? esc(nameOf(up)) + " (" + esc(up.email) + ")" : "nobody") + '</dd>' +
+                '<dt>People referred</dt><dd>' + (s ? s.referred.length : 0) + '</dd>' +
+                '<dt>Level</dt><dd>' + (s && rd.tiers.length ? tierBadge(s.tier) : "-") + '</dd>' +
+                '<dt>Account status</dt><dd>' + (p.suspended ? "Suspended" : "Active") + '</dd>' +
+                '<dt>Total deposited</dt><dd>' + money(sum.deposited) + '</dd>' +
+                '<dt>Active investment</dt><dd>' + money(sum.active) + '</dd>' +
+                '<dt>Balance</dt><dd>' + money(sum.available) + '</dd>' +
+              '</dl>' +
+              '<div class="sub-h">SUBMITTED INFORMATION</div><dl class="kv">' +
+                '<dt>Full name</dt><dd>' + esc(k.full_name) + '</dd>' +
+                '<dt>Date of birth</dt><dd>' + esc(k.date_of_birth) + ' (age ' + ageOf(k.date_of_birth) + ')</dd>' +
+                '<dt>Document</dt><dd>' + esc(k.doc_type === "nid" ? "National ID (NID)" : "Passport") + '</dd>' +
+                '<dt>Document number</dt><dd><b>' + esc(k.doc_number) + '</b></dd>' +
+                '<dt>Sent on</dt><dd>' + fmtTime(k.submitted_at) + '</dd>' +
+                '<dt>Consent given</dt><dd>' + fmtTime(k.consent_at) + '</dd>' +
+                '<dt>Result</dt><dd>' + esc(cap(k.status)) + (k.reject_reason ? ' - ' + esc(k.reject_reason) : '') + '</dd>' +
+              '</dl>' +
+              (sameName ? '' : '<div class="warn-note">The name on the document is different from the registered name.</div>') +
+            '</div><div>' +
+              '<div class="sub-h" style="margin-top:0">DOCUMENT AND LIVE PHOTO</div><div class="kyc-imgs">' +
+                img(url(res[1]), k.doc_type === "nid" ? "NID front" : "Passport page", false) +
+                (k.doc_back_path ? img(url(res[2]), "NID back", false) : '') +
+                img(url(res[3]), "Live face photo", !k.doc_back_path ? false : true) +
+              '</div></div></div>';
+
+        if (k.status === "pending") {
+            html += '<div class="reject-row"><button class="btn" data-kyc-approve="' + esc(k.id) + '">Approve verification</button>' +
+                    '<input type="text" id="kycReason" maxlength="200" placeholder="If rejecting, write the reason for the user">' +
+                    '<button class="btn btn-ghost" data-kyc-reject="' + esc(k.id) + '">Reject</button></div>';
+        }
+
+        if (history.length > 1) {
+            html += '<div class="sub-h">EARLIER REQUESTS</div><div class="table-box"><table style="min-width:520px"><thead><tr><th>SENT</th><th>DOCUMENT</th><th>RESULT</th><th>REASON</th></tr></thead><tbody>' +
+                history.filter(function (x) { return x.id !== k.id; }).map(function (x) {
+                    return '<tr><td class="muted">' + fmtTime(x.submitted_at) + '</td><td class="muted">' + esc(x.doc_type) + '</td><td>' + esc(cap(x.status)) + '</td><td class="muted">' + esc(x.reject_reason || "-") + '</td></tr>';
+                }).join("") + '</tbody></table></div>';
+        }
+
+        $("detailBox").innerHTML = html + '</div>';
+        $("detailBox").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    $("lightbox").addEventListener("click", function () { $("lightbox").hidden = true; });
+    $("detailBox").addEventListener("click", function (e) {
+        var z = e.target.closest("[data-zoom]");
+        if (z) { $("lightboxImg").src = z.getAttribute("data-zoom"); $("lightbox").hidden = false; }
+    });
+
+    async function reviewKyc(id, approve) {
+
+        var reason = approve ? null : ($("kycReason") ? $("kycReason").value.trim() : "");
+
+        if (!approve && (!reason || reason.length < 3)) { toast("Please write a short reason for the user.", false); return; }
+
+        var r = await ctx.sb.rpc("admin_review_kyc", { p_id: id, p_approve: approve, p_reason: reason });
+
+        if (r.error) { toast(r.error.message, false); return; }
+
+        toast(approve ? "Verification approved." : "Verification rejected.", true);
+        $("detailBox").innerHTML = "";
+        await loadTab();
+        await loadKycBadge();
+        render();
+    }
+
+    $("tableBox").addEventListener("click", async function (e) {
+
+        var f = e.target.closest("button[data-ref-filter]");
+        if (f) { refFilter = f.getAttribute("data-ref-filter"); renderReferrals($("searchBox").value.trim().toLowerCase()); return; }
+
+        var rdb = e.target.closest("button[data-ref-detail]");
+        if (rdb) { showReferralDetail(rdb.getAttribute("data-ref-detail")); return; }
+
+        var kf = e.target.closest("button[data-kyc-filter]");
+        if (kf) { kycFilter = kf.getAttribute("data-kyc-filter"); renderVerification($("searchBox").value.trim().toLowerCase()); return; }
+
+        var ko = e.target.closest("button[data-kyc-open]");
+        if (ko) { openKycReview(ko.getAttribute("data-kyc-open")); return; }
+
+        var st = e.target.closest("button[data-save-tier]");
+        if (st) {
+            var row = st.closest("tr");
+            var rt = await ctx.sb.rpc("admin_update_tier", {
+                p_id: Number(st.getAttribute("data-save-tier")),
+                p_min_invested: parseFloat(row.querySelector("[data-tf='inv']").value),
+                p_min_referrals: parseInt(row.querySelector("[data-tf='ref']").value, 10)
+            });
+            toast(rt.error ? rt.error.message : "Level rule saved.", !rt.error);
+            if (!rt.error) { await loadRefData(); renderReferrals($("searchBox").value.trim().toLowerCase()); }
+        }
+    });
+
+    $("detailBox").addEventListener("click", async function (e) {
+
+        var go = e.target.closest("[data-open-kyc-tab]");
+        if (go) {
+            e.preventDefault();
+            var uid2 = go.getAttribute("data-open-kyc-tab");
+            kycFilter = "all";
+            document.querySelector('.tab[data-tab="verification"]').click();
+            await new Promise(function (r) { setTimeout(r, 400); });
+            openKycReview(uid2);
+            return;
+        }
+
+        var a = e.target.closest("button[data-kyc-approve]");
+        if (a) { reviewKyc(a.getAttribute("data-kyc-approve"), true); return; }
+        var r = e.target.closest("button[data-kyc-reject]");
+        if (r) { reviewKyc(r.getAttribute("data-kyc-reject"), false); }
+    });
+
+
+    /* ===== EVENTS ===== */
+    document.querySelectorAll(".tab").forEach(function (btn) {
+        btn.addEventListener("click", async function () {
+            document.querySelectorAll(".tab").forEach(function (b) { b.classList.remove("active"); });
+            btn.classList.add("active");
+            currentTab = btn.getAttribute("data-tab");
+            $("searchBox").value = "";
+            $("detailBox").innerHTML = "";
+            openUser = null;
+            toast("");
+            $("tableBox").innerHTML = '<div class="empty">Loading...</div>';
+            await loadTab();
+            render();
+        });
+    });
+
+    $("searchBox").addEventListener("input", render);
+
+    $("detailBox").addEventListener("click", function (e) {
+        if (e.target.closest("[data-close-detail]")) {
+            $("detailBox").innerHTML = ""; openUser = null;
+            try { if (typingCh) ctx.sb.removeChannel(typingCh); } catch (x) {}
+            typingCh = null; typingName = "";
+        }
+    });
+
+    $("detailBox").addEventListener("submit", async function (e) {
+
+        if (e.target.id !== "replyForm") return;
+        e.preventDefault();
+
+        var ta = e.target.querySelector("textarea");
+        var text = ta.value.trim();
+        if (!text || !openUser) return;
+
+        var btn = $("replyBtn");
+        btn.disabled = true;
+
+        var r = await ctx.sb.rpc("admin_reply_support", { p_user: openUser, p_body: text });
+
+        btn.disabled = false;
+
+        if (r.error) { toast(r.error.message, false); return; }
+
+        ta.value = "";
+        toast("Reply sent.", true);
+        await loadThreads();
+        if (currentTab === "support") renderSupport();
+        await loadThread(openUser, true);
+    });
+
+    $("tableBox").addEventListener("click", async function (e) {
+
+        // approve / reject
+        var b = e.target.closest("button[data-kind]");
+
+        if (b) {
+
+            var kind = b.getAttribute("data-kind");
+            var approve = b.getAttribute("data-approve") === "true";
+            var fn = kind === "deposit" ? "admin_review_deposit" : "admin_review_withdrawal";
+
+            b.disabled = true;
+
+            var r = await ctx.sb.rpc(fn, { p_id: b.getAttribute("data-id"), p_approve: approve });
+
+            if (r.error) {
+                toast(r.error.message, false);
+                b.disabled = false;
+                return;
+            }
+
+            toast((approve ? "Approved." : "Rejected."), true);
+            await refresh();
+            return;
+        }
+
+        // user details
+        var dt = e.target.closest("button[data-user-detail]");
+        if (dt) { showUserDetail(dt.getAttribute("data-user-detail")); return; }
+
+        // suspend / unsuspend
+        var sp = e.target.closest("button[data-suspend]");
+        if (sp) {
+
+            var to = sp.getAttribute("data-to") === "true";
+
+            if (!confirm(to ? "Suspend this user? They will not be able to deposit or withdraw." : "Unsuspend this user?")) return;
+
+            sp.disabled = true;
+
+            var rs = await ctx.sb.rpc("admin_set_suspended", { p_user: sp.getAttribute("data-suspend"), p_suspended: to });
+
+            if (rs.error) { toast(rs.error.message, false); sp.disabled = false; return; }
+
+            toast(to ? "User suspended." : "User unsuspended.", true);
+            await loadTab();
+            render();
+            return;
+        }
+
+        // open a support conversation
+        var ot = e.target.closest("button[data-open-thread]");
+        if (ot) { loadThread(ot.getAttribute("data-open-thread")); return; }
+
+        // save plan
+        var s = e.target.closest("button[data-save-plan]");
+
+        if (s) {
+
+            var row = s.closest("tr");
+            function val(f) { return row.querySelector("[data-f='" + f + "']"); }
+
+            var rp = await ctx.sb.rpc("admin_update_plan", {
+                p_id: s.getAttribute("data-save-plan"),
+                p_min: parseFloat(val("min").value),
+                p_max: parseFloat(val("max").value),
+                p_days: parseInt(val("days").value, 10),
+                p_rate: parseFloat(val("rate").value),
+                p_ref: parseFloat(val("ref").value),
+                p_active: val("active").checked
+            });
+
+            toast(rp.error ? rp.error.message : "Plan saved.", !rp.error);
+        }
+    });
+
+    $("saveSettings").addEventListener("click", async function () {
+
+        var r1 = await ctx.sb.rpc("admin_update_settings", { p_min_withdraw: parseFloat($("minWithdraw").value) });
+
+        if (r1.error) { toast(r1.error.message, false); return; }
+
+        var r2 = await ctx.sb.rpc("admin_set_return_principal", { p_value: $("returnPrincipal").checked });
+
+        if (r2.error) { toast(r2.error.message, false); return; }
+
+        if (cache.settings && cache.settings.require_kyc_withdraw !== undefined && $("requireKyc").checked !== !!cache.settings.require_kyc_withdraw) {
+            var r3 = await ctx.sb.rpc("admin_set_require_kyc", { p_value: $("requireKyc").checked });
+            if (r3.error) { toast(r3.error.message, false); return; }
+            cache.settings.require_kyc_withdraw = $("requireKyc").checked;
+        }
+
+        toast("Settings saved.", true);
+    });
+
+
+
+    /* ----- content + banner buttons ----- */
+    $("tableBox").addEventListener("click", async function (e) {
+
+        // save / reset one section
+        var sg = e.target.closest("button[data-save-group]");
+        var rg = e.target.closest("button[data-reset-group]");
+
+        if (sg || rg) {
+
+            var panel = (sg || rg).closest(".panel");
+            var items = {};
+
+            panel.querySelectorAll("[data-ckey]").forEach(function (el) {
+                var v = el.value.trim();
+                items[el.getAttribute("data-ckey")] = (rg || v === el.getAttribute("data-def")) ? "" : v;
+            });
+
+            var done = await saveContent(items, rg ? "Original text restored." : "Saved. The site will show it within 30 seconds.");
+
+            if (done && rg) {
+                panel.querySelectorAll("[data-ckey]").forEach(function (el) { el.value = el.getAttribute("data-def"); });
+            }
+            return;
+        }
+
+        // FAQ editor
+        if (e.target.closest("button[data-faq-add]")) {
+            $("faqRows").insertAdjacentHTML("beforeend", faqRowHtml("", ""));
+            return;
+        }
+
+        var fr = e.target.closest("button[data-faq-remove]");
+        if (fr) { fr.closest(".faq-row").remove(); return; }
+
+        if (e.target.closest("button[data-faq-reset]")) {
+            if (await saveContent({ faq_items: "" }, "Original FAQ restored.")) {
+                $("faqRows").innerHTML = window.INV_CMS.faq.map(function (i) { return faqRowHtml(i.q, i.a); }).join("");
+            }
+            return;
+        }
+
+        if (e.target.closest("button[data-faq-save]")) {
+
+            var list = [];
+            document.querySelectorAll("#faqRows .faq-row").forEach(function (row) {
+                var q = row.querySelector(".faq-q").value.trim(), a = row.querySelector(".faq-a").value.trim();
+                if (q) list.push({ q: q, a: a });
+            });
+
+            if (!list.length) { toast("Add at least one question, or use Reset to original.", false); return; }
+
+            var same = JSON.stringify(list) === JSON.stringify(window.INV_CMS.faq);
+            await saveContent({ faq_items: same ? "" : JSON.stringify(list) }, "FAQ saved.");
+            return;
+        }
+
+        // banners
+        if (e.target.closest("button[data-banner-new]")) { openBannerForm(); return; }
+
+        var be = e.target.closest("button[data-banner-edit]");
+        if (be) {
+            var b1 = cache.banners.filter(function (x) { return String(x.id) === be.getAttribute("data-banner-edit"); })[0];
+            if (b1) openBannerForm(b1);
+            return;
+        }
+
+        var bt = e.target.closest("button[data-banner-toggle]");
+        if (bt) {
+            var b2 = cache.banners.filter(function (x) { return String(x.id) === bt.getAttribute("data-banner-toggle"); })[0];
+            if (!b2) return;
+            var rt = await saveBannerRow(b2, { active: !b2.active });
+            if (rt.error) { toast(rt.error.message, false); return; }
+            try { sessionStorage.removeItem("inv_cms"); } catch (x) {}
+            toast(b2.active ? "Banner turned off." : "Banner turned on.", true);
+            await loadTab(); render();
+            return;
+        }
+
+        var bd = e.target.closest("button[data-banner-del]");
+        if (bd) {
+            if (!confirm("Delete this banner for good?")) return;
+            var rd = await ctx.sb.rpc("admin_delete_banner", { p_id: Number(bd.getAttribute("data-banner-del")) });
+            if (rd.error) { toast(rd.error.message, false); return; }
+            try { sessionStorage.removeItem("inv_cms"); } catch (x) {}
+            toast("Banner deleted.", true);
+            await loadTab(); render();
+        }
+    });
+
+    $("detailBox").addEventListener("submit", async function (e) {
+
+        if (e.target.id !== "bannerForm") return;
+        e.preventDefault();
+
+        var idv = e.target.getAttribute("data-id");
+        var st = $("bStart").value, en = $("bEnd").value;
+
+        var row = {
+            id: idv === "" ? null : Number(idv),
+            message: $("bMsg").value, link_text: $("bLinkText").value, link_url: $("bLinkUrl").value,
+            style: $("bStyle").value, placement: $("bPlace").value, image_url: $("bImg").value,
+            starts_at: st ? new Date(st).toISOString() : null, ends_at: en ? new Date(en).toISOString() : null,
+            active: $("bActive").checked, sort_order: parseInt($("bSort").value, 10) || 0
+        };
+
+        $("bSave").disabled = true;
+        var r = await saveBannerRow(row);
+        $("bSave").disabled = false;
+
+        if (r.error) { toast(r.error.message, false); return; }
+
+        try { sessionStorage.removeItem("inv_cms"); } catch (x) {}
+        toast("Banner saved.", true);
+        $("detailBox").innerHTML = "";
+        await loadTab(); render();
+    });
+
+
+    /* ===== START ===== */
+    IPReady.then(async function (c) {
+
+        ctx = c;
+
+        if (c.session && await isAdminNow()) {
+            showPanel();
+        } else if (c.session) {
+            await c.sb.auth.signOut();
+            showLogin("The account you were logged in with is not an admin.");
+        } else {
+            showLogin();
+        }
+
+    }).catch(function () {
+        showLogin("Backend is not connected. Check app.js settings.");
+    });
+
+</script>
+
+</body>
+</html>

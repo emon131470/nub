@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit - INVEXORA</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+
+<header class="dashboard-header">
+    <a href="index.html" class="logo"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgNTYiIHJvbGU9ImltZyIgYXJpYS1sYWJlbD0iSU5WRVhPUkEiPgogIDxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iI2Q2ZmY0YSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2I4ZjIwMCIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgogIDxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsNCkgc2NhbGUoMC43NSkiPgogICAgPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTYiIGZpbGw9InVybCgjZykiLz4KICAgIDxwYXRoIGQ9Ik0xNiA0MiBMMjggMzAgTDM2IDM3IEw1MCAyMCIgc3Ryb2tlPSIjMGEwZTE3IiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIvPgogICAgPHBhdGggZD0iTTQwIDIwIEg1MCBWMzAiIHN0cm9rZT0iIzBhMGUxNyIgc3Ryb2tlLXdpZHRoPSI2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGZpbGw9Im5vbmUiLz4KICA8L2c+CiAgPHRleHQgeD0iNTgiIHk9IjM2IiBmb250LWZhbWlseT0iJ1NwYWNlIEdyb3Rlc2snLCAnU2Vnb2UgVUknLCBBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI3IiBmb250LXdlaWdodD0iNzAwIiBsZXR0ZXItc3BhY2luZz0iMSIgdGV4dExlbmd0aD0iMTg2IiBsZW5ndGhBZGp1c3Q9InNwYWNpbmdBbmRHbHlwaHMiIGZpbGw9IiNmZmZmZmYiPklOVkU8dHNwYW4gZmlsbD0iI2M4ZmYxZSI+WE9SQTwvdHNwYW4+PC90ZXh0PgogIDx0ZXh0IHg9IjU5IiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjcuNSIgbGV0dGVyLXNwYWNpbmc9IjMuMiIgZmlsbD0iIzdkODY5YSI+U01BUlQgSU5WRVNUTUVOVDwvdGV4dD4KPC9zdmc+Cg==" alt="INVEXORA" style="display:block;height:40px;width:auto"></a>
+    <div class="user-menu">
+        <a href="investment.html" class="back-link">← Back to plans</a>
+        <button onclick="logout()">Logout</button>
+    </div>
+</header>
+
+<main class="deposit-page">
+
+    <div class="dashboard-title">
+        <span>DEPOSIT</span>
+        <h1>Fund Your Investment</h1>
+        <p>Enter the virtual amount you want to invest in your selected plan.</p>
+    </div>
+
+    <div class="deposit-layout">
+
+        <!-- SELECTED PLAN -->
+        <aside class="deposit-plan">
+            <div class="plan-name" id="planName">PLAN</div>
+            <h2 id="planRange">$0 - $0</h2>
+            <div class="plan-line">Minimum Investment<strong id="planMin">$0</strong></div>
+            <div class="plan-line">Maximum Investment<strong id="planMax">$0</strong></div>
+            <div class="plan-line">Validity<strong id="planDays">0 Days</strong></div>
+            <div class="plan-line">Daily Profit<strong id="planRate">0%</strong></div>
+            <a href="investment.html" class="change-plan">Change plan</a>
+        </aside>
+
+        <!-- DEPOSIT FORM -->
+        <section class="deposit-box">
+
+            <form id="depositForm" novalidate>
+
+                <div class="pay-info">
+                    <div class="pay-title">Demo deposit</div>
+                    <div style="font-size:13px;color:var(--muted);">
+                        This is a simulation. No real money is needed or accepted.
+                        After you submit, an admin approves the request and your plan starts.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method (demo)</label>
+                    <div class="method-tabs" id="depMethods">
+                        <button type="button" class="method-tab active" data-method="Bank Transfer"><b>🏦</b>Bank Transfer</button>
+                        <button type="button" class="method-tab" data-method="Crypto (USDT)"><b>₮</b>Crypto (USDT)</button>
+                        <button type="button" class="method-tab" data-method="Mobile Wallet"><b>📱</b>Mobile Wallet</button>
+                    </div>
+                    <p class="form-hint">Demo only. No real account or wallet is needed and no real money moves.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="depositAmount">Deposit Amount (virtual USD)</label>
+                    <div class="amount-wrap">
+                        <span>$</span>
+                        <input type="number" id="depositAmount" placeholder="0.00" step="1" required>
+                    </div>
+                    <div class="quick-amounts">
+                        <button type="button" class="chip" id="useMin">Minimum</button>
+                        <button type="button" class="chip" id="useMax">Maximum</button>
+                    </div>
+                    <p class="form-hint" id="amountHint"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="depositNote">Note (optional)</label>
+                    <input type="text" id="depositNote" maxlength="200" placeholder="Anything you want the admin to know">
+                </div>
+
+                <div class="deposit-summary">
+                    <div><span>Selected plan</span><strong id="sumPlan">-</strong></div>
+                    <div><span>Amount</span><strong id="sumAmount">$0</strong></div>
+                    <div><span>Validity</span><strong id="sumDays">-</strong></div>
+                </div>
+
+                <p class="form-error" id="depositError" role="alert"></p>
+
+                <button type="submit" class="full-btn" id="depositBtn">Submit Deposit Request</button>
+
+            </form>
+
+            <!-- SUCCESS MESSAGE -->
+            <div class="deposit-success" id="depositSuccess" hidden>
+                <div class="success-icon">✓</div>
+                <h2>Deposit request submitted</h2>
+                <p id="successText"></p>
+                <a href="dashboard.html#history" class="btn btn-primary btn-large">View My Transactions</a>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<script src="app.js"></script>
+
+<script>
+
+    function $(id) { return document.getElementById(id); }
+
+    
+    function bindMethods(boxId) {
+        var box = document.getElementById(boxId), cur = "Bank Transfer";
+        box.addEventListener("click", function (e) {
+            var b = e.target.closest(".method-tab");
+            if (!b) return;
+            box.querySelectorAll(".method-tab").forEach(function (x) { x.classList.remove("active"); });
+            b.classList.add("active");
+            cur = b.getAttribute("data-method");
+        });
+        return function () { return cur; };
+    }
+
+    function money(n) {
+        return "$" + Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 });
+    }
+
+    var getMethod = bindMethods("depMethods");
+
+    IPReady.then(async function (ctx) {
+
+        var planId = (new URLSearchParams(window.location.search).get("plan") || "").toLowerCase();
+
+        var res = await ctx.sb.from("plans").select("*").eq("id", planId).eq("active", true).maybeSingle();
+
+        if (res.error || !res.data) {
+            window.location.replace("investment.html");
+            return;
+        }
+
+        var plan = res.data;
+        var min = Number(plan.min_amount);
+        var max = Number(plan.max_amount);
+
+        $("planName").textContent  = plan.name.toUpperCase();
+        $("planRange").textContent = money(min) + " - " + money(max);
+        $("planMin").textContent   = money(min);
+        $("planMax").textContent   = money(max);
+        $("planDays").textContent  = plan.duration_days + " Days";
+        $("planRate").textContent  = Number(plan.daily_rate) + "%";
+        $("sumPlan").textContent   = plan.name;
+        $("sumDays").textContent   = plan.duration_days + " Days";
+
+        var input = $("depositAmount");
+        input.min = min;
+        input.max = max;
+        input.placeholder = min;
+
+        $("amountHint").textContent = "Enter an amount between " + money(min) + " and " + money(max) + ".";
+
+        function inRange(v) { return !isNaN(v) && v >= min && v <= max; }
+
+        input.addEventListener("input", function () {
+            $("depositError").textContent = "";
+            var v = parseFloat(input.value);
+            $("sumAmount").textContent = isNaN(v) ? "$0" : money(v);
+            $("amountHint").classList.toggle("is-bad", input.value !== "" && !inRange(v));
+        });
+
+        $("useMin").addEventListener("click", function () { input.value = min; input.dispatchEvent(new Event("input")); });
+        $("useMax").addEventListener("click", function () { input.value = max; input.dispatchEvent(new Event("input")); });
+
+        $("depositForm").addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            var amount = parseFloat(input.value);
+
+            if (!inRange(amount)) {
+                $("depositError").textContent =
+                    "For the " + plan.name + " plan, the amount must be between " + money(min) + " and " + money(max) + ".";
+                input.focus();
+                return;
+            }
+
+            $("depositBtn").disabled = true;
+
+            var r = await ctx.sb.rpc("request_deposit", {
+                p_plan: plan.id,
+                p_amount: amount,
+                p_note: $("depositNote").value.trim() || null,
+                p_method: getMethod()
+            });
+
+            if (r.error) {
+                $("depositError").textContent = r.error.message;
+                $("depositBtn").disabled = false;
+                return;
+            }
+
+            $("successText").textContent =
+                money(amount) + " for the " + plan.name + " plan is waiting for admin approval.";
+
+            $("depositForm").hidden = true;
+            $("depositSuccess").hidden = false;
+        });
+
+    }).catch(function () {});
+
+</script>
+
+</body>
+</html>
