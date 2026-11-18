@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MT5 AI Trading Bot — Paper Terminal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div><div class="brand">NEX<span>TRADE</span></div><small>MT5 PAPER TRADING TERMINAL</small></div>
+  <div class="status"><i id="statusDot"></i><span id="connection">Backend disconnected</span></div>
+</header>
+<main>
+  <section class="hero">
+    <div><p class="eyebrow">AUTOMATED STRATEGY • VERSION 1.0</p><h1>Trading Dashboard</h1>
+      <p class="muted">Rule-based market analysis with simulated execution. No real orders are sent.</p></div>
+    <div class="actions"><button id="connectBtn" class="secondary">Check connection</button><button id="scanBtn" class="primary">Run market scan</button></div>
+  </section>
+  <section class="notice"><b>DEMO MODE ONLY</b><span>Virtual balance and simulated trades. Live order execution is disabled in this version.</span></section>
+  <section class="metrics">
+    <article class="metric"><span>Virtual balance</span><strong id="balance">$1,000.00</strong><small>Starting balance: $1,000</small></article>
+    <article class="metric"><span>Equity</span><strong id="equity">$1,000.00</strong><small>Balance + floating P/L</small></article>
+    <article class="metric"><span>Net profit / loss</span><strong id="pnl">$0.00</strong><small id="pnlPct">0.00% return</small></article>
+    <article class="metric"><span>Win rate</span><strong id="winrate">—</strong><small id="tradeCount">0 closed trades</small></article>
+  </section>
+  <section class="grid">
+    <article class="panel">
+      <div class="panel-head"><div><h2>Market scanner</h2><p class="muted">Latest closed-candle strategy assessment</p></div><span class="pill" id="signalPill">WAITING</span></div>
+      <div class="scanner">
+        <label>Symbol<select id="symbol"><option>EURUSD</option><option>GBPUSD</option><option>USDJPY</option><option>XAUUSD</option></select></label>
+        <label>Timeframe<select id="timeframe"><option value="M15">15 minutes</option><option value="M5">5 minutes</option><option value="H1">1 hour</option><option value="H4">4 hours</option></select></label>
+      </div>
+      <div class="signal" id="signalText">Connect to your local MT5 backend, then run a scan.</div>
+      <div class="indicators">
+        <div><span>EMA 20</span><b id="ema20">—</b></div><div><span>EMA 50</span><b id="ema50">—</b></div>
+        <div><span>RSI 14</span><b id="rsi">—</b></div><div><span>MACD</span><b id="macd">—</b></div>
+        <div><span>ATR 14</span><b id="atr">—</b></div><div><span>Last price</span><b id="price">—</b></div>
+      </div>
+      <p class="footnote" id="scanTime">No scan yet.</p>
+    </article>
+    <article class="panel">
+      <div class="panel-head"><div><h2>Risk controls</h2><p class="muted">Applied by the local paper engine</p></div></div>
+      <div class="risk-row"><span>Risk per trade</span><b>1% of virtual balance</b></div>
+      <div class="risk-row"><span>Stop loss</span><b>1.5 × ATR</b></div>
+      <div class="risk-row"><span>Take profit</span><b>2R target</b></div>
+      <div class="risk-row"><span>Maximum open trades</span><b>1</b></div>
+      <div class="risk-row"><span>Daily loss limit</span><b>3% (virtual)</b></div>
+      <p class="footnote">Position sizing uses the symbol's tick value and tick size when available. Verify broker contract specifications before relying on any sizing estimate.</p>
+    </article>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><div><h2>Open paper trades</h2><p class="muted">Simulated positions only</p></div></div>
+    <div class="table-wrap"><table><thead><tr><th>Symbol</th><th>Side</th><th>Entry</th><th>Stop loss</th><th>Take profit</th><th>Volume</th><th>Floating P/L</th></tr></thead><tbody id="openTrades"><tr><td colspan="7" class="empty">No open trades</td></tr></tbody></table></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><div><h2>Trade history</h2><p class="muted">Closed simulated positions</p></div><button id="refreshBtn" class="secondary small">Refresh</button></div>
+    <div class="table-wrap"><table><thead><tr><th>Closed</th><th>Symbol</th><th>Side</th><th>Entry</th><th>Exit</th><th>Reason</th><th>Net P/L</th></tr></thead><tbody id="history"><tr><td colspan="7" class="empty">No closed trades yet</td></tr></tbody></table></div>
+  </section>
+  <p class="disclaimer">Educational software, not financial advice. Strategy results are not guaranteed. Paper results may differ from live execution due to spread, slippage, commissions, swaps and broker rules.</p>
+</main>
+<script src="script.js"></script>
+</body></html>

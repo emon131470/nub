@@ -1,0 +1,4 @@
+Flask==3.1.0
+flask-cors==5.0.0
+MetaTrader5==5.0.4874
+pandas==2.2.3
